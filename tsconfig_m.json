@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "outDir": "dist",
+        "target": "ES6",
+        "strict": true,
+        "strictPropertyInitialization": false
+    },
+    "include": ["src/**/*"]
+}
