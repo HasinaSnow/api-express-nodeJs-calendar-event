@@ -1,3 +1,4 @@
+import { ValidationError } from "class-validator"
 import { Response } from "express"
 
 export class ResponseService {
@@ -23,9 +24,8 @@ export class ResponseService {
         })
     }
 
-    errorValidation(errors: any) {
-        console.log('error is ', errors)
-        const data = errors
+    errorValidation(errors: ValidationError[]) {
+        const data = errors.map(error => { return {property: error.property, constraints:error.constraints}})
         return this.res.status(400).json({
             status: false,
             message: 'Validation\'s error.',

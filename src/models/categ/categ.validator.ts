@@ -13,5 +13,6 @@ export class CategValidator implements ICateg {
     init(model: ICateg) {
         this.name = model.name
         this.infos = model.infos || ''
+        return { name: this.name, infos: this.infos }
     }
 }
