@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { BaseModel } from "../models/base.model";
 import { ResponseService } from "../utils/response";
-import { validateOrReject } from "class-validator";
+import { validate, validateOrReject } from "class-validator";
 
 interface ControllerMethods {
     store(): void,
@@ -26,20 +26,18 @@ export abstract class BaseController implements ControllerMethods {
     }
 
     store(): void {
-        const newData: any = this.req.body
-        this.validator.init(newData)
+        const data = this.validator.init(this.req.body)
 
-        validateOrReject(this.validator).catch(errors => {
-            return this.response.errorValidation(errors);
-        });
+        validate(this.validator).then(errors => {
+            if (errors.length > 0) {
+                return this.response.errorValidation(errors);
+            } else {
+                this.model.create(data)
+                    .then(() => this.response.successfullStored())
+                    .catch((error) => this.response.errorServer(error))
+            }
+          });
 
-        this.model.create(newData)
-            .then((value) => {
-                return this.response.successfullStored()
-            })
-            .catch((error) => {
-                return this.response.errorServer(error)
-            })
     }
 
     index(): void {
@@ -67,19 +65,28 @@ export abstract class BaseController implements ControllerMethods {
 
     update(): void {
         const id = this.req.params.id
-        const newCateg = this.req.body
-        this.model.update(id,newCateg)
-            .then(value => this.response.successfullUpdated(value as any))
-            .catch(error => error.code == 5
-                ? this.response.notFound() 
-                : this.response.errorServer(error)
-            )
+        const data = this.validator.init(this.req.body)
+
+        validate(this.validator).then(errors => {
+            if(errors.length > 0)
+                return this.response.errorValidation(errors)
+
+            this.model.update(id, data)
+                .then(value => this.response.successfullUpdated(value as any))
+                .catch(error => (error.code == 5)
+                    ? this.response.notFound() 
+                    : this.response.errorServer(error)
+                )
+        })
+
     }
 
     async delete() {
         const id = this.req.params.id
+
         if(!await this.exists(id))
             return this.response.notFound()
+
         this.model.delete(id)
             .then(async (value) => this.response.successfullDeleted(value as any))
             .catch(error => this.response.errorServer(error))

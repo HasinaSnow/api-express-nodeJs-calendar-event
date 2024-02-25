@@ -14,12 +14,7 @@ export abstract class BaseModel implements ModelMethods {
     ) {}
 
     async create(newData: any): Promise<FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>> {
-        try {
-            return await this.collection.add(newData)
-        } catch (error) {
-            console.log('une erreur', error)
-            throw error
-        }
+        return await this.collection.add(newData)
     }
 
     async getAll(): Promise<FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>[]> {

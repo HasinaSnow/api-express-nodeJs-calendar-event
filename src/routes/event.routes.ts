@@ -11,6 +11,7 @@ export class EventRoutes {
       }
 
     private initRoutes() {
+
         this.router.post('/', (req, res) => {
             new EventController(req, res).store()
         });

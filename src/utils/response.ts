@@ -1,3 +1,4 @@
+import { ValidationError } from "class-validator"
 import { Response } from "express"
 
 export class ResponseService {
@@ -23,13 +24,64 @@ export class ResponseService {
         })
     }
 
-    errorValidation(errors: any) {
-        console.log('error is ', errors)
-        const data = errors
+    sendingConfirmationKey(data: any = [], subject: string = 'email') {
+        return this.res.status(200).json({
+            status: true,
+            message: 'We have sending your confirmation key to your ' + subject,
+            data: data
+        })
+    }
+
+    emailNotVerified() {
+        return this.res.status(403).json({
+            status: false,
+            message: 'Your email has not been verified yet.',
+            data: []
+        })
+    }
+
+    passwordInvalid() {
+        return this.res.status(403).json({
+            status: false,
+            message: 'The password is invalid.',
+            data: []
+        })
+    }
+
+    successlogin(token: string) {
+        return this.res
+            .setHeader('Authorization', 'Bearer ' + token)
+            .status(200).json({
+            status: true,
+            message: 'Your are successfully login',
+            data: []
+        })
+    }
+
+    successLogout() {
+        return this.res
+            .setHeader('Authorization', '')
+            .status(200).json({
+            status: true,
+            message: 'Your are successfully logout',
+            data: []
+        })
+    }
+
+    errorValidation(errors: ValidationError[]) {
+        const dataError = errors.map(error => { return {property: error.property, constraints:error.constraints}})
         return this.res.status(400).json({
             status: false,
             message: 'Validation\'s error.',
-            data: data
+            data: dataError
+        })
+    }
+
+    invalidRequest(error: string = 'Invalid request') {
+        return this.res.status(400).json({
+            status: false,
+            message: error,
+            data: []
         })
     }
 
@@ -41,7 +93,7 @@ export class ResponseService {
         })
     }
 
-    successfullStored (data = []) {
+    successfullStored (data: any = []) {
         return this.res.status(200).json({
             status: true,
             message: this.subject + ' successfully stored.',
@@ -66,15 +118,15 @@ export class ResponseService {
     }
 
     notAuthorized(data= []) {
-        return this.res.status(403).json({
+        return this.res.status(401).json({
             status: false,
             message: this.subject + ' not authorized.',
             data: data
         })
     }
 
-    notAuthenticated(data: []) {
-        return this.res.status(403).json({
+    notAuthenticated(data: any = []) {
+        return this.res.status(401).json({
             status: false,
             message: 'Acess denied, you are not Authenticated.',
             data: data
