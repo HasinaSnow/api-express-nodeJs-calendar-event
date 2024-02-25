@@ -11,7 +11,13 @@ export class AccountRoutes {
 
     private initRoutes() {
         this.router.post('/signup', (req, res) => {
-            new AccountController(req, res).register()
+            new AccountController(req, res).signup()
+        })
+        this.router.post('/signin', (req, res) => {
+            new AccountController(req, res).signin()
+        })
+        this.router.post('/signout', (req, res) => {
+            new AccountController(req, res).signout()
         })
     }
 

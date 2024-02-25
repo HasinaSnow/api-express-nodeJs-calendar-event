@@ -2,6 +2,7 @@ import {
   registerDecorator,
   ValidationOptions,
   ValidationArguments,
+  isEmail,
 } from "class-validator";
 import { db } from "../../config/firestore";
 
@@ -20,8 +21,9 @@ export function ExistIn(
         async validate(value: any, args: ValidationArguments) {
           const [relatedPropertyName] = args.constraints;
           const relatedValue = (args.object as any)[relatedPropertyName];
-
-          return (await db.collection(property).doc(value).get()).exists
+          const field = isEmail(value) ? 'email' : 'phone'
+          const data = await db.collection(property).where(field, '==', value).get()
+          return !data.empty
 
         },
       },

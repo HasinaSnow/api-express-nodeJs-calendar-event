@@ -33,12 +33,8 @@ export abstract class BaseController implements ControllerMethods {
                 return this.response.errorValidation(errors);
             } else {
                 this.model.create(data)
-                    .then(() => {
-                        return this.response.successfullStored()
-                    })
-                    .catch((error) => {
-                        return this.response.errorServer(error)
-                    })
+                    .then(() => this.response.successfullStored())
+                    .catch((error) => this.response.errorServer(error))
             }
           });
 
