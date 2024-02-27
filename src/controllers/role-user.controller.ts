@@ -3,6 +3,7 @@ import { BaseController } from "./base.controller";
 import { RoleUserUpdateValidator, RoleUserValidator } from "../models/role-user/role-user.validator";
 import { RoleUser } from "../models/role-user/role-user.model";
 import { RoleUserPermission } from "../permission/role-user.permission";
+import { SUBJECT } from "../data/default-collection-name";
 
 export class RoleUserController extends BaseController {
 
@@ -10,7 +11,7 @@ export class RoleUserController extends BaseController {
         super(
             req,
             res,
-            'The RoleUser',
+            SUBJECT.roleUser,
             new RoleUser(), 
             new RoleUserValidator(),
             new RoleUserUpdateValidator(),

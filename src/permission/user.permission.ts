@@ -1,11 +1,12 @@
 import { Request } from "express";
 import { BasePermission } from "./base.permission";
 import { User } from "../models/user/user.model";
+import { ROLE_NAME } from "../data/default-role-name.data";
 
 export class UserPermission extends BasePermission {
 
     constructor(req: Request) {
-        super(req, 'USER MANAGER', new User())
+        super(req, ROLE_NAME.userManager, new User())
     }
 
     async toStore(): Promise<Boolean> {

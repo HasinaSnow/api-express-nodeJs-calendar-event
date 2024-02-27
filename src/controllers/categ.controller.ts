@@ -3,6 +3,7 @@ import { CategUpdateValidator, CategValidator } from "../models/categ/categ.vali
 import { Categ } from "../models/categ/categ.model";
 import { BaseController } from "./base.controller";
 import { CategPermission } from "../permission/categ.permission";
+import { SUBJECT } from "../data/default-collection-name";
 
 export class CategController extends BaseController {
 
@@ -10,7 +11,7 @@ export class CategController extends BaseController {
         super(
             req,
             res,
-            'Category',
+            SUBJECT.categ,
             new Categ(),
             new CategValidator(),
             new CategUpdateValidator(),

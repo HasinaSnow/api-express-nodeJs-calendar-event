@@ -3,6 +3,7 @@ import { Event } from "../models/event/event.model";
 import { EventUpdateValidator, EventValidator } from "../models/event/event.validator";
 import { BaseController } from "./base.controller";
 import { EventPermission } from "../permission/event.permission";
+import { SUBJECT } from "../data/default-collection-name";
 
 export class EventController extends BaseController {
 
@@ -10,7 +11,7 @@ export class EventController extends BaseController {
         super(
             req,
             res,
-            'Category',
+            SUBJECT.event,
             new Event(),
             new EventValidator(),
             new EventUpdateValidator(),

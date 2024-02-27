@@ -3,14 +3,25 @@ import { BaseController } from "./base.controller";
 import { User } from "../models/user/user.model";
 import { UserUpdateValidator, UserValidator } from "../models/user/user.validator";
 import { validate } from "class-validator";
+import { UserPermission } from "../permission/user.permission";
+import { SUBJECT } from "../data/default-collection-name";
 
 export class UserController extends BaseController {
 
     private userUpdateValidator: UserUpdateValidator
 
     constructor(req: Request, res: Response) {
-        super(req, res, 'User', new User(), new UserValidator(), new UserUpdateValidator())
-        this.userUpdateValidator = new UserUpdateValidator()
+        const updateValidator = new UserUpdateValidator()
+        super(
+            req,
+            res,
+            SUBJECT.user,
+            new User(),
+            new UserValidator(),
+            updateValidator,
+            new UserPermission(req)
+        )
+        this.userUpdateValidator = updateValidator
     }
 
     updateUserPublicInfos() {
@@ -28,10 +39,6 @@ export class UserController extends BaseController {
                     : this.response.errorServer(error)
                 )
         })
-    }
-
-    updateEmail() {
-
     }
 
 }

@@ -3,6 +3,7 @@ import { auth } from "../config/firestore";
 import { BaseModel } from "../models/base.model";
 import { Role } from "../models/role/role.model";
 import { RoleUser } from "../models/role-user/role-user.model";
+import { ROLE_NAME } from "../data/default-role-name.data";
 
 export class PermissionService {
 
@@ -24,7 +25,7 @@ export class PermissionService {
     }
 
     async isAdmin() {
-        const roleId = await this.roleModel.getIdByName('ADMIN')
+        const roleId = await this.roleModel.getIdByName(ROLE_NAME.admin)
         return !(await this.roleUserModel.getRoleRef(roleId)).empty
     }
 

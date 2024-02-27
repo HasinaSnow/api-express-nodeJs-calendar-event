@@ -1,10 +1,13 @@
 import { IsNotEmpty, IsOptional, IsString, Length, MaxLength } from "class-validator";
 import { IUser, IUserUpdate } from "./user.interface";
+import { IsUnique } from "../../utils/validators/unique.validator";
+import { COLLECTION } from "../../data/default-collection-name";
 
 export class UserValidator implements IUser {
 
     @IsString()
     @IsNotEmpty({message: 'Your Name is required'})
+    @IsUnique(COLLECTION.user, {message: 'The name is already exists'})
     @Length(3, 25)
     name: string
 
@@ -29,6 +32,7 @@ export class UserUpdateValidator implements IUserUpdate {
     @IsString()
     @IsNotEmpty({message: 'Your Name is required'})
     @Length(3, 25)
+    @IsUnique(COLLECTION.user, {message: 'The name is already exists'})
     @IsOptional()
     name: string | undefined
 

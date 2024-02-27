@@ -1,6 +1,7 @@
 import {  IsDate, IsDateString, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 import { IEvent, IEventUpdate } from "./event.interface";
 import { ExistIn } from "../../utils/validators/exists.validator";
+import { COLLECTION } from "../../data/default-collection-name";
 
 export class EventValidator implements IEvent {
 
@@ -14,7 +15,7 @@ export class EventValidator implements IEvent {
 
     @IsString()
     @IsNotEmpty()
-    @ExistIn('categs', { message: 'The specified category is not found' })
+    @ExistIn(COLLECTION.categ, { message: 'The specified category is not found' })
     categId: string;
 
     init(model: IEvent) {

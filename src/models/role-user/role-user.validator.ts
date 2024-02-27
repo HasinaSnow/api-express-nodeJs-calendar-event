@@ -1,16 +1,17 @@
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { IRoleUser, IRoleUserUpdate } from "./role-user.interface";
 import { ExistIn } from "../../utils/validators/exists.validator";
+import { COLLECTION } from "../../data/default-collection-name";
 
 export class RoleUserValidator implements IRoleUser {
     @IsString()
     @IsNotEmpty({message: 'The user id is required.'})
-    @ExistIn('users', {message: 'The user id is invalid'})
+    @ExistIn(COLLECTION.user, {message: 'The user id is invalid'})
     userId: string;
 
     @IsString()
     @IsNotEmpty({message: 'The role id is required.'})
-    @ExistIn('roles', {message: 'The role id is invalid'})
+    @ExistIn(COLLECTION.role, {message: 'The role id is invalid'})
     roleId: string;
 
     @IsBoolean()
@@ -28,12 +29,12 @@ export class RoleUserValidator implements IRoleUser {
 export class RoleUserUpdateValidator implements IRoleUserUpdate {
     @IsString()
     @IsOptional()
-    @ExistIn('users')
+    @ExistIn(COLLECTION.user, {message: 'The user id is invalid'})
     userId: string |undefined;
 
     @IsString()
     @IsOptional()
-    @ExistIn('role')
+    @ExistIn(COLLECTION.role, {message: 'The role id is invalid'})
     roleId: string |undefined;
 
     @IsOptional()

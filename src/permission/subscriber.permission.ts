@@ -1,11 +1,12 @@
 import { Request } from "express";
 import { BasePermission } from "./base.permission";
 import { Subscriber } from "../models/subscriber/subscriber.model";
+import { ROLE_NAME } from "../data/default-role-name.data";
 
 export class SubscriberPermission extends BasePermission {
 
     constructor(req: Request) {
-        super(req, 'SUBSCRIBER MANAGER', new Subscriber())
+        super(req, ROLE_NAME.subscriberManager, new Subscriber())
     }
 
     async toStore(): Promise<Boolean> {

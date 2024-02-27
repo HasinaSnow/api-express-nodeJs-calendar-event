@@ -1,11 +1,12 @@
 import { IsOptional, IsString, Length, MaxLength } from "class-validator";
 import { IRole, IRoleUpdate } from "./role.interface";
 import { IsUnique } from "../../utils/validators/unique.validator";
+import { COLLECTION } from "../../data/default-collection-name";
 
 export class RoleValidator implements IRole {
     @IsString()
     @Length(3, 20)
-    @IsUnique('roles', {message: 'The name field is already exists.'})
+    @IsUnique(COLLECTION.role, {message: 'The name field is already exists.'})
     name: string;
 
     @IsString()
@@ -23,6 +24,7 @@ export class RoleUpdateValidator implements IRoleUpdate {
     @IsString()
     @Length(3, 20)
     @IsOptional()
+    @IsUnique(COLLECTION.role, {message: 'The name field is already exists.'})
     name: string |undefined;
 
     @IsString()

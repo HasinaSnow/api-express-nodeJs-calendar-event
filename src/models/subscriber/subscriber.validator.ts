@@ -1,16 +1,17 @@
 import { IsDateString, IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber } from "class-validator";
 import { ISubscriber, ISubscriberUpdate } from "./subscriber.interface";
 import { IsUnique } from "../../utils/validators/unique.validator";
+import { COLLECTION } from "../../data/default-collection-name";
 
 export class SubscriberValidator implements ISubscriber {
 
     @IsEmail()
-    @IsUnique('subscribers', {message: 'The email is already exists'})
+    @IsUnique(COLLECTION.subscriber, {message: 'The email is already exists'})
     @IsOptional()
     email: string;
 
     @IsPhoneNumber('MG')
-    @IsUnique('subscribers', {message: 'The email is already exists'})
+    @IsUnique(COLLECTION.subscriber, {message: 'The phoneNumber is already exists'})
     @IsOptional()
     phone: string;
 
@@ -29,12 +30,12 @@ export class SubscriberValidator implements ISubscriber {
 
 export class SubscriberUpdateValidator implements ISubscriberUpdate {
     @IsEmail()
-    @IsUnique('subscribers', {message: 'The email is already exists'})
+    @IsUnique(COLLECTION.subscriber, {message: 'The email is already exists'})
     @IsOptional()
     email: string | undefined;
 
     @IsPhoneNumber('MG')
-    @IsUnique('subscribers', {message: 'The email is already exists'})
+    @IsUnique(COLLECTION.subscriber, {message: 'The email is already exists'})
     @IsOptional()
     phone: string | undefined;
 

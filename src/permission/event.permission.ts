@@ -1,11 +1,12 @@
 import { Request } from "express";
 import { BasePermission } from "./base.permission";
 import { Event } from "../models/event/event.model";
+import { ROLE_NAME } from "../data/default-role-name.data";
 
 export class EventPermission extends BasePermission {
 
     constructor(req: Request) {
-        super(req, 'EVENT MANAGER', new Event())
+        super(req, ROLE_NAME.eventManager, new Event())
     }
 
     async toStore(): Promise<Boolean> {

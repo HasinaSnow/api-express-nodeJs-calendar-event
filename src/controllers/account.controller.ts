@@ -6,6 +6,7 @@ import { Account } from "../models/account/account.model";
 import { ILogin, IRegister } from "../models/account/account.interface";
 import { LoginValidator } from "../models/account/login.validator";
 import { User } from "../models/user/user.model";
+import { SUBJECT } from "../data/default-collection-name";
 
 export class AccountController {
   private dataSignUp: IRegister;
@@ -15,7 +16,7 @@ export class AccountController {
     private req: Request,
     private res: Response,
     private model: Account = new Account(),
-    private response: ResponseService = new ResponseService(res, "Account")
+    private response: ResponseService = new ResponseService(res, SUBJECT.account)
   ) {}
 
   async signup() {

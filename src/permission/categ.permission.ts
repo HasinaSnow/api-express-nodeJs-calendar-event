@@ -1,11 +1,12 @@
 import { Request } from "express";
 import { BasePermission } from "./base.permission";
 import { Categ } from "../models/categ/categ.model";
+import { ROLE_NAME } from "../data/default-role-name.data";
 
 export class CategPermission extends BasePermission {
 
     constructor(req: Request) {
-        super(req, 'CATEG MANAGER', new Categ())
+        super(req, ROLE_NAME.categManager, new Categ())
     }
 
     async toStore(): Promise<Boolean> {

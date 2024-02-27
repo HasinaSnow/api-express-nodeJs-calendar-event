@@ -1,9 +1,10 @@
 import { db } from "../../config/firestore";
+import { COLLECTION } from "../../data/default-collection-name";
 import { BaseModel } from "../base.model";
 
 export class Role extends BaseModel {
     constructor() {
-        super(db.collection('roles'))
+        super(db.collection(COLLECTION.role))
     }
 
     async getIdByName(roleName: string) {
