@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { BaseModel } from "../models/base.model";
 import { ResponseService } from "../utils/response";
-import { validate, validateOrReject } from "class-validator";
+import { validate } from "class-validator";
+import { BasePermission } from "../permission/base.permission";
 
 interface ControllerMethods {
     store(): void,
@@ -20,27 +21,39 @@ export abstract class BaseController implements ControllerMethods {
         protected res: Response,
         protected subject: string,
         protected model: BaseModel,
-        protected validator: any,
+        protected createValidator: any,
+        protected updateValidator: any,
+        protected isPermis: BasePermission
         ) {
         this.response = new ResponseService(res, subject)
     }
 
-    store(): void {
-        const data = this.validator.init(this.req.body)
+    async store() {
+        const data = this.createValidator.init(this.req.body)
 
-        validate(this.validator).then(errors => {
-            if (errors.length > 0) {
-                return this.response.errorValidation(errors);
-            } else {
-                this.model.create(data)
-                    .then(() => this.response.successfullStored())
-                    .catch((error) => this.response.errorServer(error))
-            }
-          });
+        // verify permission
+        if(!await this.isPermis.toStore())
+            return this.response.notAuthorized()
+
+        // verify validation
+        validate(this.createValidator)
+            .then(errors => {
+                if (errors.length > 0) {
+                    return this.response.errorValidation(errors);
+                } else {
+                    this.model.create(data)
+                        .then(() => this.response.successfullStored())
+                        .catch((error) => this.response.errorServer(error))
+                }
+            });
 
     }
 
-    index(): void {
+    async index() {
+        // verify permission
+        if(!await this.isPermis.toViewIndex())
+            return this.response.notAuthorized()
+
         this.model.getAll()
             .then((values) => {
                 let data: any[] = []
@@ -52,24 +65,35 @@ export abstract class BaseController implements ControllerMethods {
             .catch(error => this.response.errorServer(error))
     }
 
-    show(): void {
+    async show() {
+
         const id = this.req.params.id
         this.model.getOne(id)
-            .then(value => {
-                return value.exists
-                    ? this.response.successfullGetted({id: value.id, ...value.data()} as any)
-                    : this.response.notFound()
+            .then(async value => {
+                if(value.exists) {
+                    // verify permission
+                    if (!await this.isPermis.toShow(id))
+                        return  this.response.notAuthorized()
+
+                    return this.response.successfullGetted({id: value.id, ...value.data()} as any)
+                } else {
+                    return  this.response.notFound()
+                }
             })
             .catch(error => this.response.errorServer(error))
     }
 
-    update(): void {
+    async update() {
         const id = this.req.params.id
-        const data = this.validator.init(this.req.body)
+        const data = this.updateValidator.init(this.req.body)
 
-        validate(this.validator).then(errors => {
+        validate(this.updateValidator).then(async errors => {
             if(errors.length > 0)
                 return this.response.errorValidation(errors)
+
+            // verify permission
+            if (!await this.isPermis.toUpdate(id))
+                return  this.response.notAuthorized()
 
             this.model.update(id, data)
                 .then(value => this.response.successfullUpdated(value as any))
@@ -86,6 +110,10 @@ export abstract class BaseController implements ControllerMethods {
 
         if(!await this.exists(id))
             return this.response.notFound()
+
+        // verify permission
+        if (!await this.isPermis.toDelete(id))
+            return  this.response.notAuthorized()
 
         this.model.delete(id)
             .then(async (value) => this.response.successfullDeleted(value as any))
