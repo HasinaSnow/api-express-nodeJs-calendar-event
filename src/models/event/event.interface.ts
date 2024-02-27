@@ -3,3 +3,8 @@ export interface IEvent {
     infos?: string,
     categId: string
 }
+export interface IEventUpdate {
+    date?: Date,
+    infos?: string,
+    categId?: string
+}

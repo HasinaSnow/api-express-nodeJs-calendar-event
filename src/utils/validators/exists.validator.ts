@@ -21,9 +21,17 @@ export function ExistIn(
         async validate(value: any, args: ValidationArguments) {
           const [relatedPropertyName] = args.constraints;
           const relatedValue = (args.object as any)[relatedPropertyName];
-          const field = isEmail(value) ? 'email' : 'phone'
-          const data = await db.collection(property).where(field, '==', value).get()
-          return !data.empty
+          let result = undefined
+          let data = undefined
+          if(isEmail(value)) {
+            data = (await db.collection(property).where('email', '==', value).get())
+            result = !data.empty
+          } else {
+            data = (await db.collection(property).doc(value).get())
+            result = data.exists
+          }
+          // console.log(`___Data ${property}_${value}___ `, result)
+          return result
 
         },
       },

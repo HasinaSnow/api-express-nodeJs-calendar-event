@@ -1,9 +1,9 @@
-export interface ICateg {
+export interface IRole {
     name: string,
     infos?: string
 }
 
-export interface ICategUpdate {
+export interface IRoleUpdate {
     name?: string,
     infos?: string
 }

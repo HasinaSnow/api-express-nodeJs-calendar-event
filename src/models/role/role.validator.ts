@@ -1,26 +1,30 @@
 import { IsOptional, IsString, Length, MaxLength } from "class-validator";
-import { ICateg, ICategUpdate } from "./categ.interface";
+import { IRole, IRoleUpdate } from "./role.interface";
+import { IsUnique } from "../../utils/validators/unique.validator";
+import { COLLECTION } from "../../data/default-collection-name";
 
-export class CategValidator implements ICateg {
+export class RoleValidator implements IRole {
     @IsString()
     @Length(3, 20)
+    @IsUnique(COLLECTION.role, {message: 'The name field is already exists.'})
     name: string;
 
     @IsString()
     @MaxLength(255)
     infos?: string | undefined;
 
-    init(model: ICateg) {
-        this.name = model.name
+    init(model: IRole) {
+        this.name = model.name || ''
         this.infos = model.infos || ''
         return { name: this.name, infos: this.infos }
     }
 }
 
-export class CategUpdateValidator implements ICategUpdate {
+export class RoleUpdateValidator implements IRoleUpdate {
     @IsString()
     @Length(3, 20)
     @IsOptional()
+    @IsUnique(COLLECTION.role, {message: 'The name field is already exists.'})
     name: string |undefined;
 
     @IsString()
@@ -28,7 +32,7 @@ export class CategUpdateValidator implements ICategUpdate {
     @IsOptional()
     infos: string | undefined;
 
-    init(model: ICategUpdate) {
+    init(model: IRoleUpdate) {
         this.name = model.name
         this.infos = model.infos
 

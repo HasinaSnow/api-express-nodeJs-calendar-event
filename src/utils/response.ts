@@ -85,7 +85,7 @@ export class ResponseService {
         })
     }
 
-    successfullGetted(data = []) {
+    successfullGetted(data: any = []) {
         return this.res.status(200).json({
             status: true,
             message: this.subject + ' successfully retrieved.',
@@ -120,7 +120,7 @@ export class ResponseService {
     notAuthorized(data= []) {
         return this.res.status(401).json({
             status: false,
-            message: this.subject + ' not authorized.',
+            message: 'You are not authorized for this operation.',
             data: data
         })
     }
@@ -128,7 +128,7 @@ export class ResponseService {
     notAuthenticated(data: any = []) {
         return this.res.status(401).json({
             status: false,
-            message: 'Acess denied, you are not Authenticated.',
+            message: 'Access denied, you are not Authenticated.',
             data: data
         })
     }

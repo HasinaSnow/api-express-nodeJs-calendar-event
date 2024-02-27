@@ -1,4 +1,4 @@
-interface ModelMethods {
+export interface ModelMethods {
     create(newData: any): Promise<FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>>,
     getAll(): Promise<FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>[]>,
     getOne(id: string): Promise<FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>>,
@@ -10,7 +10,7 @@ interface ModelMethods {
 export abstract class BaseModel implements ModelMethods {
 
     constructor(
-        private collection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
+        protected collection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
     ) {}
 
     async create(newData: any): Promise<FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>> {
@@ -35,6 +35,16 @@ export abstract class BaseModel implements ModelMethods {
 
     async exists(id: string): Promise<Boolean> {
         return (await this.getOne(id)).exists
+    }
+
+    async isCreatedBy(id: string, userId: string) {
+        return this.collection.doc(id).get()
+            .then(data => data.get('createdBy') == userId)
+    }
+
+    async isUpdatedBy(id: string, userId: string) {
+        return this.collection.doc(id).get()
+            .then(data => data.get('updatedBy') == userId)
     }
 
 }

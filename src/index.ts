@@ -7,6 +7,9 @@ import { SubscriberRoutes } from './routes/subscriber.routes';
 import { initFirebase } from './config/firebase';
 import { authMiddleware } from './middlewares/auth.middleware';
 import { ResponseService } from './utils/response';
+import { RoleRoutes } from './routes/role.routes';
+import { UserRoutes } from './routes/user.routes';
+import { RoleUserRoutes } from './routes/role-user.routes';
 
 // init server (express)
 const app = express()
@@ -16,7 +19,6 @@ const app = express()
 // init firebase
 initFirebase()
 
-
 // listen routes
 app.use('/account', new AccountRoutes().getRouter())
 
@@ -25,6 +27,9 @@ app.use(authMiddleware)
 app.use('/events', new EventRoutes().getRouter())
 app.use('/categs', new CategRoutes().getRouter())
 app.use('/subscribers', new SubscriberRoutes().getRouter())
+app.use('/roles', new RoleRoutes().getRouter())
+app.use('/role_users', new RoleUserRoutes().getRouter())
+app.use('/users', new UserRoutes().getRouter())
 
 // 404 not found
 app.use(function (req, res, next) {

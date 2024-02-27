@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import { RegisterValidator } from "../models/account/register.validator";
 import { isEmail, validate } from "class-validator";
 import { ResponseService } from "../utils/response";
-import { AccountModel } from "../models/account/account.model";
+import { Account } from "../models/account/account.model";
 import { ILogin, IRegister } from "../models/account/account.interface";
 import { LoginValidator } from "../models/account/login.validator";
+import { User } from "../models/user/user.model";
+import { SUBJECT } from "../data/default-collection-name";
 
 export class AccountController {
   private dataSignUp: IRegister;
@@ -13,8 +15,8 @@ export class AccountController {
   constructor(
     private req: Request,
     private res: Response,
-    private model: AccountModel = new AccountModel(),
-    private response: ResponseService = new ResponseService(res, "Account")
+    private model: Account = new Account(),
+    private response: ResponseService = new ResponseService(res, SUBJECT.account)
   ) {}
 
   async signup() {
@@ -24,8 +26,15 @@ export class AccountController {
       this.model
         .register(this.dataSignUp)
         .then((userCredential) => {
-            this.model.sendEmailConfirmation(userCredential.user)
-                .then((value) => this.response.sendingConfirmationKey(value, "email"))
+            this.model.storeDisplayName(userCredential.user.uid, this.dataSignUp)
+              .then(userRecord => {
+                this.model.sendEmailConfirmation(userCredential.user)
+                  .then((value) => {
+                    const data = { name: userRecord.displayName, email: userRecord.email, userRef: userRecord.uid }
+                    new User().create(data)
+                      .then(_ => this.response.sendingConfirmationKey(value, "email"))
+                  })
+              })
         })
         .catch((error) => this.response.errorServer(error.message));
     }
@@ -33,18 +42,25 @@ export class AccountController {
 
   async signin() {
     if (await this.loginValid()) {
+
       // get user
       this.model.login(this.dataLogin)
-        .then((creds) => {
-          console.log('___auth___', this.model.currentUser()?.email)
+        .then(async (creds) => {
+
             // verify emailVerified
             if (!creds.user.emailVerified)
-                return this.response.emailNotVerified();
+            return this.response.emailNotVerified();
+
+          console.log('___displayName___', await this.haveAccount(creds.user.uid as string))
+            // verify account user
+            if(!await this.haveAccount(creds.user.uid as string))
+              this.createAccount(creds.user.uid, creds.user.displayName as string)
+                .catch(error => this.response.errorServer(error))
 
             // generate token
             this.model.generateToken(creds.user.uid)
               creds.user.getIdToken()
-              .then(token => this.response.successlogin(token))
+                  .then(token => this.response.successlogin(token))
         })
         .catch((error) => {
             switch (error.code) {
@@ -62,12 +78,10 @@ export class AccountController {
   }
 
   async signout() {
-    console.log('___coucu')
     const token = this.req.header('Authorization')?.split(' ')[1]
     if(!token)
       return this.response.invalidRequest()
 
-    console.log('___token', token)
       this.model.verifyToken(token)
         .then(value => {
           this.model.logout(value.uid)
@@ -99,5 +113,13 @@ export class AccountController {
       }
       return true;
     });
+  }
+
+  private async haveAccount(userRef: string) {
+    return await this.model.haveAccount(userRef)
+  }
+
+  private createAccount(userRef: string, name: string) {
+    return this.model.createAccount(userRef, name)
   }
 }
