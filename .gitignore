@@ -1,5 +1,4 @@
 node_modules
 firebaseConfig.js
 firebaseConfig.ts
-dist/
 firestore.creds.json
