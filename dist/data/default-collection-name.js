@@ -7,7 +7,8 @@ exports.COLLECTION = {
     role: 'roles',
     roleUser: 'role_users',
     subscriber: 'subscribers',
-    user: 'users'
+    user: 'users',
+    service: 'services'
 };
 exports.SUBJECT = {
     account: 'Account',
@@ -16,5 +17,6 @@ exports.SUBJECT = {
     role: 'Role',
     roleUser: 'User Role',
     subscriber: 'Subscriber',
-    user: 'User'
+    user: 'User',
+    service: 'Service'
 };
