@@ -3,6 +3,7 @@ import { ResponseService } from "../utils/response";
 import { validate } from "class-validator";
 import { BasePermission } from "../permission/base.permission";
 import { BaseModel } from "../models/base.model";
+import { RefService } from "../services/ref.service";
 
 interface ControllerMethods {
     store(): void,
@@ -29,7 +30,7 @@ export abstract class BaseController implements ControllerMethods {
     }
 
     async store() {
-        const data = this.createValidator.init(this.req.body)
+        let data = this.createValidator.init(this.req.body)
 
         // verify permission
         if(!await this.isPermis.toStore())
@@ -37,16 +38,18 @@ export abstract class BaseController implements ControllerMethods {
 
         // verify validation
         validate(this.createValidator)
-            .then(errors => {
+            .then(async errors => {
                 if (errors.length > 0) {
                     return this.response.errorValidation(errors);
                 } else {
-                    this.model.create(data)
+                    // create data with createRef (updatedBy & updatedAt)
+                    const dataWithRef = await RefService.addRefs(this.req, data)
+                    // store data with ref in db
+                    this.model.create(dataWithRef)
                         .then(() => this.response.successfullStored())
                         .catch((error) => this.response.errorServer(error))
                 }
             });
-
     }
 
     async index() {
@@ -95,7 +98,9 @@ export abstract class BaseController implements ControllerMethods {
             if (!await this.isPermis.toUpdate(id))
                 return  this.response.notAuthorized()
 
-            this.model.update(id, data)
+            // create data with updatedRef (updatedBy & updatedAt)
+            const dataWithRef = await RefService.newUpdatedRef(this.req, data)
+            this.model.update(id, dataWithRef)
                 .then(value => this.response.successfullUpdated(value as any))
                 .catch(error => (error.code == 5)
                     ? this.response.notFound() 

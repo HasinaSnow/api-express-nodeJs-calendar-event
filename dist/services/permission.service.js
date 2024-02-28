@@ -10,10 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PermissionService = void 0;
-const firestore_1 = require("../config/firestore");
 const role_model_1 = require("../models/role/role.model");
 const role_user_model_1 = require("../models/role-user/role-user.model");
 const default_role_name_data_1 = require("../data/default-role-name.data");
+const utils_1 = require("../utils/utils");
 class PermissionService {
     constructor(req, model) {
         this.req = req;
@@ -23,12 +23,8 @@ class PermissionService {
         this.setCurrentUserId(req);
     }
     setCurrentUserId(req) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const authToken = (_a = req.header('Authorization')) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
-            return firestore_1.auth.verifyIdToken(authToken)
-                .then(user => this.userId = user.uid)
-                .catch(_ => { throw Error('userId not found'); });
+            this.userId = yield (0, utils_1.getUidToken)(req);
         });
     }
     isAdmin() {
@@ -51,7 +47,7 @@ class PermissionService {
     }
     isAuthor(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.model.isCreatedBy(id, this.userId);
+            return yield this.model.isCreatedBy(id, this.userId);
         });
     }
 }

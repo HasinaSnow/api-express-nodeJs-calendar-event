@@ -9,21 +9,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Role = void 0;
-const firestore_1 = require("../../config/firestore");
-const default_collection_name_1 = require("../../data/default-collection-name");
-const base_model_1 = require("../base.model");
-class Role extends base_model_1.BaseModel {
-    constructor() {
-        super(firestore_1.db.collection(default_collection_name_1.COLLECTION.role));
-    }
-    getIdByName(roleName) {
+exports.RefService = void 0;
+const utils_1 = require("../utils/utils");
+class RefService {
+    /**
+     * add createdAt and updatedAt's property
+     * @param data object
+     * @return object
+     */
+    static addRefs(req, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.collection.where('name', '==', roleName).get()
-                .then(role => {
-                return role.docs[0].id;
-            });
+            return Object.assign(Object.assign({}, data), { createdAt: new Date().toJSON(), createdBy: yield (0, utils_1.getUidToken)(req), updatedAt: null, updatedBy: null });
+        });
+    }
+    static newUpdatedRef(req, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return Object.assign(Object.assign({}, data), { updatedAt: new Date().toJSON(), updatedBy: yield (0, utils_1.getUidToken)(req) });
         });
     }
 }
-exports.Role = Role;
+exports.RefService = RefService;

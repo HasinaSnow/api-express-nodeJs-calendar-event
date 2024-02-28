@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseController = void 0;
 const response_1 = require("../utils/response");
 const class_validator_1 = require("class-validator");
+const ref_service_1 = require("../services/ref.service");
 class BaseController {
     constructor(req, res, subject, model, createValidator, updateValidator, isPermis) {
         this.req = req;
@@ -25,22 +26,25 @@ class BaseController {
     }
     store() {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = this.createValidator.init(this.req.body);
+            let data = this.createValidator.init(this.req.body);
             // verify permission
             if (!(yield this.isPermis.toStore()))
                 return this.response.notAuthorized();
             // verify validation
             (0, class_validator_1.validate)(this.createValidator)
-                .then(errors => {
+                .then((errors) => __awaiter(this, void 0, void 0, function* () {
                 if (errors.length > 0) {
                     return this.response.errorValidation(errors);
                 }
                 else {
-                    this.model.create(data)
+                    // create data with createRef (updatedBy & updatedAt)
+                    const dataWithRef = yield ref_service_1.RefService.addRefs(this.req, data);
+                    // store data with ref in db
+                    this.model.create(dataWithRef)
                         .then(() => this.response.successfullStored())
                         .catch((error) => this.response.errorServer(error));
                 }
-            });
+            }));
         });
     }
     index() {
@@ -87,7 +91,9 @@ class BaseController {
                 // verify permission
                 if (!(yield this.isPermis.toUpdate(id)))
                     return this.response.notAuthorized();
-                this.model.update(id, data)
+                // create data with updatedRef (updatedBy & updatedAt)
+                const dataWithRef = yield ref_service_1.RefService.newUpdatedRef(this.req, data);
+                this.model.update(id, dataWithRef)
                     .then(value => this.response.successfullUpdated(value))
                     .catch(error => (error.code == 5)
                     ? this.response.notFound()
