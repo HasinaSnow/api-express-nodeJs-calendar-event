@@ -6,6 +6,7 @@ exports.ROLE_NAME = {
     categManager: 'CATEG MANAGER',
     eventManager: 'EVENT MANAGER',
     serviceManager: 'SERVICE MANAGER',
+    serviceUserManager: 'SERVICE_USER MANAGER',
     roleUserManager: 'ROLE_USER MANAGER',
     roleManager: 'ROLE MANAGER',
     subscriberManager: 'SUBSCRIBER MANAGER4',

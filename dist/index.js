@@ -16,6 +16,7 @@ const role_routes_1 = require("./routes/role.routes");
 const user_routes_1 = require("./routes/user.routes");
 const role_user_routes_1 = require("./routes/role-user.routes");
 const service_routes_1 = require("./routes/service.routes");
+const service_user_routes_1 = require("./routes/service-user.routes");
 // init server (express)
 const app = (0, express_1.default)()
     .use(express_1.default.json())
@@ -33,6 +34,7 @@ app.use('/roles', new role_routes_1.RoleRoutes().getRouter());
 app.use('/role_users', new role_user_routes_1.RoleUserRoutes().getRouter());
 app.use('/users', new user_routes_1.UserRoutes().getRouter());
 app.use('/services', new service_routes_1.ServiceRoutes().getRouter());
+app.use('/service_users', new service_user_routes_1.ServiceUserRoutes().getRouter());
 // 404 not found
 app.use(function (req, res, next) {
     new response_1.ResponseService(res, 'Url').notFound();
