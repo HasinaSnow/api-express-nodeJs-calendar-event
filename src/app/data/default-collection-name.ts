@@ -4,7 +4,8 @@ export const COLLECTION = {
     role: 'roles',
     roleUser: 'role_users',
     subscriber: 'subscribers',
-    user: 'users'
+    user: 'users',
+    service: 'services'
 }
 
 export const SUBJECT = {
@@ -14,5 +15,6 @@ export const SUBJECT = {
     role: 'Role',
     roleUser: 'User Role',
     subscriber: 'Subscriber',
-    user: 'User'
+    user: 'User',
+    service: 'Service'
 }
