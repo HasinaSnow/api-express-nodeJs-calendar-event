@@ -21,10 +21,8 @@ class Role extends base_model_1.BaseModel {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.collection.where('name', '==', roleName).get()
                 .then(role => {
-                // console.log('__role empty__', role.empty)
                 return role.docs[0].id;
             });
-            // .catch(error => { th})s
         });
     }
 }

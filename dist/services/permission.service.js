@@ -47,7 +47,7 @@ class PermissionService {
     }
     isAuthor(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.model.isCreatedBy(id, this.userId);
+            return yield this.model.isCreatedBy(id, this.userId);
         });
     }
 }

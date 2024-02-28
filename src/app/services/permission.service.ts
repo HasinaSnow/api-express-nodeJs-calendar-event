@@ -38,7 +38,7 @@ export class PermissionService {
     }
 
     async isAuthor(id: string) {
-        return this.model.isCreatedBy(id, this.userId)
+        return await this.model.isCreatedBy(id, this.userId)
     }
 
 }
