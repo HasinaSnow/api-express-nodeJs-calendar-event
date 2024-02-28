@@ -11,6 +11,7 @@ import { RoleRoutes } from './routes/role.routes';
 import { UserRoutes } from './routes/user.routes';
 import { RoleUserRoutes } from './routes/role-user.routes';
 import { ServiceRoutes } from './routes/service.routes';
+import { ServiceUserRoutes } from './routes/service-user.routes';
 
 // init server (express)
 const app = express()
@@ -32,6 +33,7 @@ app.use('/roles', new RoleRoutes().getRouter())
 app.use('/role_users', new RoleUserRoutes().getRouter())
 app.use('/users', new UserRoutes().getRouter())
 app.use('/services', new ServiceRoutes().getRouter())
+app.use('/service_users', new ServiceUserRoutes().getRouter())
 
 // 404 not found
 app.use(function (req, res, next) {
