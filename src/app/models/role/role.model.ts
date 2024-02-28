@@ -10,8 +10,9 @@ export class Role extends BaseModel {
     async getIdByName(roleName: string) {
         return await this.collection.where('name', '==', roleName).get()
             .then(role => {
-                console.log('__role empty__', role.empty)
-                return role.docs[0].id})
+                // console.log('__role empty__', role.empty)
+                return role.docs[0].id
+            })
             // .catch(error => { th})s
     }
 

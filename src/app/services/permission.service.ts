@@ -4,6 +4,7 @@ import { BaseModel } from "../models/base.model";
 import { Role } from "../models/role/role.model";
 import { RoleUser } from "../models/role-user/role-user.model";
 import { ROLE_NAME } from "../data/default-role-name.data";
+import { getUidToken } from "../utils/utils";
 
 export class PermissionService {
 
@@ -18,10 +19,7 @@ export class PermissionService {
     }
 
     private async setCurrentUserId(req: Request) {
-        const authToken = req.header('Authorization')?.split(' ')[1];
-        return auth.verifyIdToken(authToken as '')
-            .then(user => this.userId = user.uid)
-            .catch(_ => { throw Error('userId not found')})
+        this.userId = await getUidToken(req)
     }
 
     async isAdmin() {
