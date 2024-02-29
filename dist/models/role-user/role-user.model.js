@@ -10,12 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoleUser = void 0;
-const firestore_1 = require("../../config/firestore");
+const firebaseConfig_1 = require("../../config/firebaseConfig");
 const default_collection_name_1 = require("../../data/default-collection-name");
 const base_model_1 = require("../base.model");
 class RoleUser extends base_model_1.BaseModel {
     constructor() {
-        super(firestore_1.db.collection(default_collection_name_1.COLLECTION.roleUser));
+        super(firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.roleUser));
     }
     getRoleRef(roleId) {
         return __awaiter(this, void 0, void 0, function* () {

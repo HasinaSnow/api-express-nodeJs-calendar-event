@@ -1,4 +1,4 @@
 node_modules
-firebaseConfig.js
-firebaseConfig.ts
-firestore.creds.json
+dist/
+.vscode/
+.env

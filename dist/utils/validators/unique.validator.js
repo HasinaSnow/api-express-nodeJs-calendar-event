@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IsUnique = void 0;
 const class_validator_1 = require("class-validator");
-const firestore_1 = require("../../config/firestore");
+const firebaseConfig_1 = require("../../config/firebaseConfig");
 function IsUnique(property, validationOptions) {
     return function (object, propertyName) {
         (0, class_validator_1.registerDecorator)({
@@ -27,7 +27,7 @@ function IsUnique(property, validationOptions) {
                         const relatedValue = args.object[relatedPropertyName];
                         if (!value)
                             return false;
-                        const email = yield firestore_1.db.collection(property).where(propertyName, '==', value).get();
+                        const email = yield firebaseConfig_1.db.collection(property).where(propertyName, '==', value).get();
                         // console.log('____docs____', email.empty)
                         return email.empty;
                     });

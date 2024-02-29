@@ -4,7 +4,6 @@ import { EventRoutes } from './routes/event.routes';
 import { CategRoutes } from './routes/categ.routes';
 import { AccountRoutes } from './routes/account.routes';
 import { SubscriberRoutes } from './routes/subscriber.routes';
-import { initFirebase } from './config/firebase';
 import { authMiddleware } from './middlewares/auth.middleware';
 import { ResponseService } from './utils/response';
 import { RoleRoutes } from './routes/role.routes';
@@ -12,6 +11,7 @@ import { UserRoutes } from './routes/user.routes';
 import { RoleUserRoutes } from './routes/role-user.routes';
 import { ServiceRoutes } from './routes/service.routes';
 import { ServiceUserRoutes } from './routes/service-user.routes';
+import { initFirebase } from './config/firebaseConfig';
 
 // init server (express)
 const app = express()
@@ -47,7 +47,7 @@ app.use(function (req, res, next) {
   });
 
 // listen port
-const port = 3000
+const port = process.env.APP_PORT
 app.listen(port, () => {
     console.log('Server running in port:' + port)
 })

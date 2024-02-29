@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Account = void 0;
 const auth_1 = require("firebase/auth");
-const firestore_1 = require("../../config/firestore");
+const firebaseConfig_1 = require("../../config/firebaseConfig");
 const user_model_1 = require("../user/user.model");
 class Account {
     constructor(auth = (0, auth_1.getAuth)()) {
@@ -14,22 +14,22 @@ class Account {
         return (0, auth_1.createUserWithEmailAndPassword)(this.auth, newData.email, newData.password);
     }
     storeDisplayName(id, newData) {
-        return firestore_1.auth.updateUser(id, { displayName: newData.name, });
+        return firebaseConfig_1.auth.updateUser(id, { displayName: newData.name, });
     }
     login(newData) {
         return (0, auth_1.signInWithEmailAndPassword)(this.auth, newData.email, newData.password);
     }
     logout(userId) {
-        return firestore_1.auth.revokeRefreshTokens(userId);
+        return firebaseConfig_1.auth.revokeRefreshTokens(userId);
     }
     getUserByEmail(email) {
-        return firestore_1.auth.getUserByEmail(email);
+        return firebaseConfig_1.auth.getUserByEmail(email);
     }
     generateToken(userId) {
-        return firestore_1.auth.createCustomToken(userId);
+        return firebaseConfig_1.auth.createCustomToken(userId);
     }
     verifyToken(token) {
-        return firestore_1.auth.verifyIdToken(token);
+        return firebaseConfig_1.auth.verifyIdToken(token);
     }
     sendEmailConfirmation(user) {
         return (0, auth_1.sendEmailVerification)(user);

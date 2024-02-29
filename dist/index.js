@@ -9,7 +9,6 @@ const event_routes_1 = require("./routes/event.routes");
 const categ_routes_1 = require("./routes/categ.routes");
 const account_routes_1 = require("./routes/account.routes");
 const subscriber_routes_1 = require("./routes/subscriber.routes");
-const firebase_1 = require("./config/firebase");
 const auth_middleware_1 = require("./middlewares/auth.middleware");
 const response_1 = require("./utils/response");
 const role_routes_1 = require("./routes/role.routes");
@@ -17,12 +16,13 @@ const user_routes_1 = require("./routes/user.routes");
 const role_user_routes_1 = require("./routes/role-user.routes");
 const service_routes_1 = require("./routes/service.routes");
 const service_user_routes_1 = require("./routes/service-user.routes");
+const firebaseConfig_1 = require("./config/firebaseConfig");
 // init server (express)
 const app = (0, express_1.default)()
     .use(express_1.default.json())
     .use((0, cors_1.default)());
 // init firebase
-(0, firebase_1.initFirebase)();
+(0, firebaseConfig_1.initFirebase)();
 // listen routes
 app.use('/account', new account_routes_1.AccountRoutes().getRouter());
 // auth
@@ -45,7 +45,7 @@ app.use(function (req, res, next) {
     new response_1.ResponseService(res).errorServer('Internal server error.');
 });
 // listen port
-const port = 3000;
+const port = process.env.APP_PORT;
 app.listen(port, () => {
     console.log('Server running in port:' + port);
 });

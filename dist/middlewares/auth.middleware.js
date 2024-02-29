@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authMiddleware = void 0;
-const firestore_1 = require("../config/firestore");
+const firebaseConfig_1 = require("../config/firebaseConfig");
 const response_1 = require("../utils/response");
 // Middleware d'authentification
 const authMiddleware = (req, res, next) => {
@@ -11,10 +11,10 @@ const authMiddleware = (req, res, next) => {
     if (!authToken) {
         return response.notAuthenticated();
     }
-    firestore_1.auth.verifyIdToken(authToken)
+    firebaseConfig_1.auth.verifyIdToken(authToken)
         .then((decodedToken) => {
         // refresh token
-        firestore_1.auth.createCustomToken(decodedToken.uid)
+        firebaseConfig_1.auth.createCustomToken(decodedToken.uid)
             .then((token) => {
             res.setHeader('Authorization', 'Bearer ' + token);
             next();

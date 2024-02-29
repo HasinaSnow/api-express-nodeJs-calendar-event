@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { auth } from "../config/firestore";
+import { auth } from "../config/firebaseConfig";
 
 /**
  * decode the token in request and get the uid

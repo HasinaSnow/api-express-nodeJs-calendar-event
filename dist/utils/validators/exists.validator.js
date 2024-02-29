@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExistIn = void 0;
 const class_validator_1 = require("class-validator");
-const firestore_1 = require("../../config/firestore");
+const firebaseConfig_1 = require("../../config/firebaseConfig");
 function ExistIn(property, validationOptions) {
     return function (object, propertyName) {
         (0, class_validator_1.registerDecorator)({
@@ -28,11 +28,11 @@ function ExistIn(property, validationOptions) {
                         let result = undefined;
                         let data = undefined;
                         if ((0, class_validator_1.isEmail)(value)) {
-                            data = (yield firestore_1.db.collection(property).where('email', '==', value).get());
+                            data = (yield firebaseConfig_1.db.collection(property).where('email', '==', value).get());
                             result = !data.empty;
                         }
                         else {
-                            data = (yield firestore_1.db.collection(property).doc(value).get());
+                            data = (yield firebaseConfig_1.db.collection(property).doc(value).get());
                             result = data.exists;
                         }
                         // console.log(`___Data ${property}_${value}___ `, result)

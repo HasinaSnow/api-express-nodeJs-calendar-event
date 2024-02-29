@@ -1,4 +1,4 @@
-import { db } from '../config/firestore'
+import { db } from '../config/firebaseConfig'
 import { categCollection } from './seeders/categ.seed';
 import { ICollection } from './collection.interface';
 import { eventCollection } from './seeders/event.seed';

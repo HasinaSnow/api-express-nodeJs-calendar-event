@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const firestore_1 = require("../config/firestore");
+const firebaseConfig_1 = require("../config/firebaseConfig");
 const categ_seed_1 = require("./seeders/categ.seed");
 const event_seed_1 = require("./seeders/event.seed");
 const service_seed_1 = require("./seeders/service.seed");
@@ -18,7 +18,7 @@ function addDocs(colName, docs) {
     const docsCount = docs.length;
     let count = 0;
     docs.forEach(doc => {
-        firestore_1.db.collection(colName).add(doc)
+        firebaseConfig_1.db.collection(colName).add(doc)
             .then(result => {
             count++;
             console.log(`___ADDED___${colName}--${result.id}`);
@@ -28,7 +28,7 @@ function addDocs(colName, docs) {
 // fresh db
 function freshDocs(colName) {
     return __awaiter(this, void 0, void 0, function* () {
-        return firestore_1.db.collection(colName).listDocuments().then(docs => {
+        return firebaseConfig_1.db.collection(colName).listDocuments().then(docs => {
             if (docs.length === 0) {
                 console.log(`____NO DOC TO REMOVED____`);
                 return;

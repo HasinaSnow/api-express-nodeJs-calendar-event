@@ -3,7 +3,7 @@ import {
     ValidationOptions,
     ValidationArguments,
   } from "class-validator";
-  import { db } from "../../config/firestore";
+  import { db } from "../../config/firebaseConfig";
 
   export function IsUnique(
     property: string,

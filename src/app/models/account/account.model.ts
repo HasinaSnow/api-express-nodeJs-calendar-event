@@ -1,6 +1,6 @@
 import { ILogin, IRegister } from "./account.interface";
 import { getAuth, sendEmailVerification, User, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { auth as authAdmin } from '../../config/firestore'
+import { auth as authAdmin } from '../../config/firebaseConfig'
 import { User as UserModel } from "../user/user.model";
 import { IUser } from "../user/user.interface";
 
