@@ -1,5 +1,4 @@
 import { Request } from "express";
-import { auth } from "../config/firebaseConfig";
 import { BaseModel } from "../models/base.model";
 import { Role } from "../models/role/role.model";
 import { RoleUser } from "../models/role-user/role-user.model";

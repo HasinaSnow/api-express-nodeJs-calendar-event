@@ -25,7 +25,7 @@ export abstract class BasePermission {
     abstract toDelete(id: string): Promise<Boolean>
 
     /**
-     * isAdmin || isPermis
+     * isAdmin || havePermissionRole
      */
     protected async classicPermission() {
         return (await this.userCurrent.isAdmin() || await this.userCurrent.isPermis(this.role))
@@ -33,7 +33,7 @@ export abstract class BasePermission {
     }
 
     /**
-     *  isAdmin || (isPermis && (isAuthor || isSuper))
+     *  isAdmin || (havePermissionRole && (isAuthor || isSuper))
      * @param id string: idModel
      * @returns Promise<Boolean>
      */
@@ -46,7 +46,7 @@ export abstract class BasePermission {
     }
 
     /**
-     * (iqAdmin || isPermis) && (isSuper || isAuthor)
+     * (iqAdmin || havePermissionRole) && (isSuper || isAuthor)
      * @param id string: idModel
      * @returns Promise<Boolean>
      */
@@ -58,7 +58,7 @@ export abstract class BasePermission {
     }
 
     /**
-     *  isPermis && isSuper
+     *  havePermissionRole && isSuper
      * @param id string idModel
      * @returns Promise<Boolean>
      */

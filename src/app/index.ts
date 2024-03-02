@@ -12,11 +12,38 @@ import { RoleUserRoutes } from './routes/role-user.routes';
 import { ServiceRoutes } from './routes/service.routes';
 import { ServiceUserRoutes } from './routes/service-user.routes';
 import { initFirebase } from './config/firebaseConfig';
+import { createServer } from 'http';
+import { Server }  from 'socket.io'
+import { NotifRoutes } from './routes/notif.routes';
+import { EventServiceRoutes } from './routes/event-service.routes';
 
 // init server (express)
 const app = express()
-    .use(express.json())
-    .use(cors());
+const server = createServer(app)
+
+app
+.use(cors())
+// .use(express.json())
+
+const socket = new Server(server, {
+  cors: {
+    origin: "*"
+  }
+})
+
+// channel listen
+socket.on('connection', (socket) => {
+  console.log('Nouvelle connexion:', socket.id);
+  socket.emit('isConnected', 'Api rest calendar event')
+
+  // Gérer les événements de socket ici
+
+  socket.on('disconnect', () => {
+    socket.emit('isDisconnected', 'Api rest calendar event')
+    console.log('Déconnexion:', socket.id);
+  });
+});
+
 
 // init firebase
 initFirebase()
@@ -34,6 +61,8 @@ app.use('/role_users', new RoleUserRoutes().getRouter())
 app.use('/users', new UserRoutes().getRouter())
 app.use('/services', new ServiceRoutes().getRouter())
 app.use('/service_users', new ServiceUserRoutes().getRouter())
+app.use('/event_services', new EventServiceRoutes().getRouter())
+app.use('/notifs', new NotifRoutes().getRouter())
 
 // 404 not found
 app.use(function (req, res, next) {
@@ -48,7 +77,7 @@ app.use(function (req, res, next) {
 
 // listen port
 const port = process.env.APP_PORT
-app.listen(port, () => {
+server.listen(port, () => {
     console.log('Server running in port:' + port)
 })
 

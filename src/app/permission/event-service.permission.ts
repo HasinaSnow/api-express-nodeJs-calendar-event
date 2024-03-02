@@ -1,12 +1,12 @@
 import { Request } from "express";
 import { BasePermission } from "./base.permission";
-import { Event } from "../models/event/event.model";
 import { ROLE_NAME } from "../data/default-role-name.data";
+import { EventService } from "../models/event-service/event-service.model";
 
-export class EventPermission extends BasePermission {
+export class EventServicePermission extends BasePermission {
 
     constructor(req: Request) {
-        super(req, ROLE_NAME.eventManager, new Event())
+        super(req, ROLE_NAME.eventServiceManager, new EventService())
     }
 
     async toStore(): Promise<Boolean> {
@@ -14,7 +14,7 @@ export class EventPermission extends BasePermission {
     }
 
     async toViewIndex(): Promise<Boolean> {
-        return this.classicPermission()
+        return true
     }
 
     async toShow(id: string): Promise<Boolean> {
