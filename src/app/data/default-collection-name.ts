@@ -6,7 +6,9 @@ export const COLLECTION = {
     subscriber: 'subscribers',
     user: 'users',
     service: 'services',
-    serviceUser: 'service_users'
+    serviceUser: 'service_users',
+    eventService: 'eventService',
+    notif: 'notifs',
 }
 
 export const SUBJECT = {
@@ -18,5 +20,7 @@ export const SUBJECT = {
     subscriber: 'Subscriber',
     user: 'User',
     service: 'Service',
-    serviceUser: 'User Service'
+    serviceUser: 'User Service',
+    eventService: 'eventService',
+    notif: 'Notification'
 }

@@ -6,17 +6,23 @@ import { EventPermission } from "../permission/event.permission";
 import { SUBJECT } from "../data/default-collection-name";
 
 export class EventController extends BaseController {
+    private eventModel: Event
 
     constructor(req: Request, res: Response) {
+        const event = new Event()
         super(
             req,
             res,
             SUBJECT.event,
-            new Event(),
+            event,
             new EventValidator(),
             new EventUpdateValidator(),
             new EventPermission(req)
-        )
+            )
+        this.eventModel = event
+    }
+
+    async indexForAtribuables() {
     }
 
 }

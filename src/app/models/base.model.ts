@@ -1,3 +1,6 @@
+import { isArray } from "class-validator"
+
+
 export interface ModelMethods {
     create(newData: any): Promise<FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>>,
     getAll(): Promise<FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>[]>,
@@ -10,7 +13,7 @@ export interface ModelMethods {
 export abstract class BaseModel implements ModelMethods {
 
     constructor(
-        protected collection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
+        public collection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
     ) {}
 
     async create(newData: any): Promise<FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>> {

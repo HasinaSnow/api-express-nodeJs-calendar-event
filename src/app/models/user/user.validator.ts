@@ -1,7 +1,8 @@
-import { IsNotEmpty, IsOptional, IsString, Length, MaxLength } from "class-validator";
+import { IsArray, IsNotEmpty, IsOptional, IsString, Length, MaxLength } from "class-validator";
 import { IUser, IUserUpdate } from "./user.interface";
 import { IsUnique } from "../../utils/validators/unique.validator";
 import { COLLECTION } from "../../data/default-collection-name";
+import { ExistIn } from "../../utils/validators/exists.validator";
 
 export class UserValidator implements IUser {
 
@@ -23,6 +24,7 @@ export class UserValidator implements IUser {
         this.name = model.name || ''
         this.userRef = model.userRef || ''
         this.infos = model.infos || ''
+
         return { name: this.name, infos: this.infos, userRef: this.userRef }
     }
 }
@@ -45,7 +47,7 @@ export class UserUpdateValidator implements IUserUpdate {
         this.name = model.name
         this.infos = model.infos
 
-        const m = {name: this.name, infos: this.infos } as { [key: string]: any }
+        const m = {name: this.name, infos: this.infos} as { [key: string]: any }
         return Object.keys(m)
             .reduce((result: { [key: string]: any }, key) => {
                 if (m[key] !== undefined) {

@@ -3,6 +3,7 @@ import {
   ValidationOptions,
   ValidationArguments,
   isEmail,
+  isArray,
 } from "class-validator";
 import { db } from "../../config/firebaseConfig";
 
@@ -27,6 +28,14 @@ export function ExistIn(
             data = (await db.collection(property).where('email', '==', value).get())
             result = !data.empty
           } else {
+            if(isArray(value)) {
+              const values = value as string[]
+              values.forEach(async v => {
+                data = (await db.collection(property).where('email', '==', value).get())
+                if(data.empty) return false
+              })
+              result = true
+            }
             data = (await db.collection(property).doc(value).get())
             result = data.exists
           }

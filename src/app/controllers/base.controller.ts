@@ -4,6 +4,7 @@ import { validate } from "class-validator";
 import { BasePermission } from "../permission/base.permission";
 import { BaseModel } from "../models/base.model";
 import { RefService } from "../services/ref.service";
+import { NotifService } from "../services/notif.service";
 
 interface ControllerMethods {
     store(): void,
@@ -46,7 +47,12 @@ export abstract class BaseController implements ControllerMethods {
                     const dataWithRef = await RefService.addRefs(this.req, data)
                     // store data with ref in db
                     this.model.create(dataWithRef)
-                        .then(() => this.response.successfullStored())
+                        .then((data) => {
+                            // dispacth notif
+
+                            // return response
+                            return this.response.successfullStored()
+                        })
                         .catch((error) => this.response.errorServer(error))
                 }
             });
