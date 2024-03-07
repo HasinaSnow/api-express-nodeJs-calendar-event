@@ -19,12 +19,12 @@ class RefService {
      */
     static addRefs(req, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Object.assign(Object.assign({}, data), { createdAt: new Date().toJSON(), createdBy: yield (0, utils_1.getUidToken)(req), updatedAt: null, updatedBy: null });
+            return Object.assign(Object.assign({}, data), { createdAt: new Date(), createdBy: yield (0, utils_1.getUidToken)(req), updatedAt: null, updatedBy: null });
         });
     }
     static newUpdatedRef(req, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Object.assign(Object.assign({}, data), { updatedAt: new Date().toJSON(), updatedBy: yield (0, utils_1.getUidToken)(req) });
+            return Object.assign(Object.assign({}, data), { updatedAt: new Date(), updatedBy: yield (0, utils_1.getUidToken)(req) });
         });
     }
 }

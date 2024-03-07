@@ -20,12 +20,19 @@ export class UserValidator implements IUser {
     @MaxLength(255)
     infos: string;
 
+    @IsString()
+    @IsArray()
+    @IsNotEmpty({ message: 'The service id is required.'})
+    @IsOptional()
+    @ExistIn(COLLECTION.service, { message: 'One of id service is invalid'})
+    serviceRefs: string[]
+
     init(model: IUser) {
         this.name = model.name || ''
         this.userRef = model.userRef || ''
         this.infos = model.infos || ''
 
-        return { name: this.name, infos: this.infos, userRef: this.userRef }
+        return { name: this.name, infos: this.infos, userRef: this.userRef, serviceRefs: this.serviceRefs }
     }
 }
 
@@ -43,11 +50,18 @@ export class UserUpdateValidator implements IUserUpdate {
     @IsOptional()
     infos: string | undefined;
 
+    @IsString()
+    @IsArray()
+    @IsNotEmpty({ message: 'The service id is required.'})
+    @IsOptional()
+    @ExistIn(COLLECTION.service, { message: 'One of id service is invalid'})
+    serviceRefs?: string[]
+
     init(model: IUserUpdate) {
         this.name = model.name
         this.infos = model.infos
 
-        const m = {name: this.name, infos: this.infos} as { [key: string]: any }
+        const m = {name: this.name, infos: this.infos, serviceRefs: this.serviceRefs } as { [key: string]: any }
         return Object.keys(m)
             .reduce((result: { [key: string]: any }, key) => {
                 if (m[key] !== undefined) {

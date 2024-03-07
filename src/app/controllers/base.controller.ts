@@ -4,7 +4,6 @@ import { validate } from "class-validator";
 import { BasePermission } from "../permission/base.permission";
 import { BaseModel } from "../models/base.model";
 import { RefService } from "../services/ref.service";
-import { NotifService } from "../services/notif.service";
 
 interface ControllerMethods {
     store(): void,
@@ -63,12 +62,12 @@ export abstract class BaseController implements ControllerMethods {
         if(!await this.isPermis.toViewIndex())
             return this.response.notAuthorized()
 
-        this.model.getAll()
-            .then((values) => {
-                let data: any[] = []
-                values.forEach(doc => {
-                    data.push({id: doc.id, ...doc.data()})
-                });
+        const limit: number = parseInt(this.req.params.limit) || 30
+        const lastFieldValue: string = this.req.params.cursor || ''
+
+        this.model.getAll(limit, lastFieldValue)
+            .then((result) => {
+                const data = this.model.formatView(result.docs)
                 return this.response.successfullGetted(data as any)
             })
             .catch(error => this.response.errorServer(error))

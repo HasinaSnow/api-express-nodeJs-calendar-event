@@ -56,12 +56,11 @@ class BaseController {
             // verify permission
             if (!(yield this.isPermis.toViewIndex()))
                 return this.response.notAuthorized();
-            this.model.getAll()
-                .then((values) => {
-                let data = [];
-                values.forEach(doc => {
-                    data.push(Object.assign({ id: doc.id }, doc.data()));
-                });
+            const limit = parseInt(this.req.params.limit) || 30;
+            const lastFieldValue = this.req.params.cursor || '';
+            this.model.getAll(limit, lastFieldValue)
+                .then((result) => {
+                const data = this.model.formatView(result.docs);
                 return this.response.successfullGetted(data);
             })
                 .catch(error => this.response.errorServer(error));

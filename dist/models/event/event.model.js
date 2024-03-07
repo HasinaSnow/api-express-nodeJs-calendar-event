@@ -18,12 +18,46 @@ class Event extends base_model_1.BaseModel {
         super(firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.event));
     }
     /**
-     * retriev all events for the id services specified
+     * retrieve all events for the id services and month limit specified
+     * @param serviceRefs {string[]}
+     * @param limitMonth {number}
      */
-    forServices(servicesRefs, filter) {
+    getByServices(limitMonth, servicesRefs) {
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const in12NextMonth = new Date().setMonth(currentMonth + limitMonth);
+        const startCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const end12NextMonth = new Date(new Date(in12NextMonth).setMonth(new Date(in12NextMonth).getMonth() + 1, 0));
+        let collection = this.collection
+            .where('date', '>=', startCurrentMonth)
+            .where('date', '<=', end12NextMonth);
+        if (servicesRefs.length > 0)
+            collection = collection.where('serviceRefs', 'array-contains-any', servicesRefs);
+        return collection.get();
+    }
+    /**
+     *
+     * @param eventId {string}
+     * @returns Promise<string[]>
+     */
+    getServiceRefs(eventId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (yield this.collection.where('serviceRefs', 'array-contains', servicesRefs).get()).docs;
+            return (yield firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.eventService).where('eventId', '==', eventId).get())
+                .docs.map(doc => doc.get('serviceId'));
         });
+    }
+    getfilterEvent(docs, filter) {
+        if (filter.date)
+            docs = docs.filter(doc => new Date(doc.get('date')).getDate() == filter.date);
+        if (filter.month)
+            docs = docs.filter(doc => new Date(doc.get('date')).getMonth() == filter.month);
+        if (filter.year)
+            docs = docs.filter(doc => new Date(doc.get('date')).getFullYear() == filter.year);
+        if (filter.categId)
+            docs = docs.filter(doc => doc.get('categId') == filter.categId);
+        if (filter.clientId)
+            docs = docs.filter(doc => doc.get('clientId') == filter.clientId);
+        return docs;
     }
 }
 exports.Event = Event;

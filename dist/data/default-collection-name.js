@@ -10,7 +10,8 @@ exports.COLLECTION = {
     user: 'users',
     service: 'services',
     serviceUser: 'service_users',
-    notif: 'notifs'
+    eventService: 'eventService',
+    notif: 'notifs',
 };
 exports.SUBJECT = {
     account: 'Account',
@@ -22,5 +23,6 @@ exports.SUBJECT = {
     user: 'User',
     service: 'Service',
     serviceUser: 'User Service',
+    eventService: 'eventService',
     notif: 'Notification'
 };

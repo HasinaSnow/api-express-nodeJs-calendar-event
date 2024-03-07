@@ -7,16 +7,29 @@ import { ServicePermission } from "../permission/service.permission";
 
 export class ServiceController extends BaseController {
 
-    constructor(req: Request, res: Response) {
+    constructor(req: Request, res: Response, protected service: Service = new Service()) {
         super(
             req,
             res,
             SUBJECT.service,
-            new Service(),
+            service,
             new ServiceValidator(),
             new ServiceUpdateValidator(),
             new ServicePermission(req)
             )
+    }
+
+    indexUserRefs(serviceId: string) {
+        return this.service.getUserRefs(serviceId)
+    }
+
+    /**
+     * get all refs of events for the specific serviceId
+     * @param string serviceId
+     * @return Promise<string>
+     */
+    indexEventRefs(serviceId: string) {
+        return this.service.getEventRefs(serviceId)
     }
 
 }

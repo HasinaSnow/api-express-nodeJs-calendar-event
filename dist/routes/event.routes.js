@@ -9,6 +9,9 @@ class EventRoutes {
         this.initRoutes();
     }
     initRoutes() {
+        this.router.get('/attribuable', (req, res) => {
+            new event_controller_1.EventController(req, res).indexAttribuable();
+        });
         this.router.post('/', (req, res) => {
             new event_controller_1.EventController(req, res).store();
         });

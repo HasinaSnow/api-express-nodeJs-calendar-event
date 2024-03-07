@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { isEmail, validate } from "class-validator";
+import { validate } from "class-validator";
 import { ResponseService } from "../utils/response";
 import { Account } from "../models/account/account.model";
 import { ILogin, IRegister } from "../models/account/account.interface";

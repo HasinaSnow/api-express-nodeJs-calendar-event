@@ -24,5 +24,11 @@ class User extends base_model_1.BaseModel {
                 .catch(() => { throw Error('Error in Database users collection useref.'); });
         });
     }
+    getServiceRefs(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (yield firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.serviceUser).where('userId', '==', userId).get())
+                .docs.map(doc => doc.get('serviceId'));
+        });
+    }
 }
 exports.User = User;
