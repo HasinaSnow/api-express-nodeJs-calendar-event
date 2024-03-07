@@ -32,6 +32,15 @@ function ExistIn(property, validationOptions) {
                             result = !data.empty;
                         }
                         else {
+                            if ((0, class_validator_1.isArray)(value)) {
+                                const values = value;
+                                values.forEach((v) => __awaiter(this, void 0, void 0, function* () {
+                                    data = (yield firebaseConfig_1.db.collection(property).where('email', '==', value).get());
+                                    if (data.empty)
+                                        return false;
+                                }));
+                                result = true;
+                            }
                             data = (yield firebaseConfig_1.db.collection(property).doc(value).get());
                             result = data.exists;
                         }

@@ -8,27 +8,27 @@ import { UserUpdateValidator, UserValidator } from "../models/user/user.validato
 
 export class UserController extends BaseController {
 
-    private userUpdateValidator: UserUpdateValidator
-
-    constructor(req: Request, res: Response) {
-        const updateValidator = new UserUpdateValidator()
+    constructor(
+        req: Request,
+        res: Response,
+        private user: User = new User(),
+    ) {
         super(
             req,
             res,
             SUBJECT.user,
-            new User(),
+            user,
             new UserValidator(),
-            updateValidator,
+            new UserUpdateValidator(),
             new UserPermission(req)
         )
-        this.userUpdateValidator = updateValidator
     }
 
     updateUserPublicInfos() {
         const id = this.req.params.id
-        const data = this.userUpdateValidator.init(this.req.body)
+        const data = this.updateValidator.init(this.req.body)
 
-        validate(this.userUpdateValidator).then(errors => {
+        validate(this.updateValidator).then(errors => {
             if(errors.length > 0)
                 return this.response.errorValidation(errors)
 
@@ -39,6 +39,10 @@ export class UserController extends BaseController {
                     : this.response.errorServer(error)
                 )
         })
+    }
+
+    indexServiceRefs(userId: string) {
+        return this.user.getServiceRefs(userId)
     }
 
 }

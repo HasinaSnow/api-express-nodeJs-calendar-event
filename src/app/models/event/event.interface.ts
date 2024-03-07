@@ -1,12 +1,12 @@
 export interface IEvent {
-    date: Date,
+    date: string,
     infos?: string,
     categId: string,
-    serviceRefs: string[]
+    // serviceRefs: string[]
 }
 export interface IEventUpdate {
-    date?: Date,
+    date?: string,
     infos?: string,
     categId?: string,
-    serviceRefs?: string[]
+    // serviceRefs?: string[]
 }

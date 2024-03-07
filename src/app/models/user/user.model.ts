@@ -14,4 +14,9 @@ export class User extends BaseModel {
             .catch(() => { throw Error('Error in Database users collection useref.') })
     }
 
+    async getServiceRefs(userId: string) {
+        return (await db.collection(COLLECTION.serviceUser).where('userId', '==', userId).get())
+            .docs.map(doc => doc.get('serviceId') as string)
+    }
+
 }

@@ -17,7 +17,7 @@ class ResponseService {
         return this.res.status(500).json({
             status: false,
             message: 'Error server',
-            data: error
+            data: error.message
         });
     }
     sendingConfirmationKey(data = [], subject = 'email') {

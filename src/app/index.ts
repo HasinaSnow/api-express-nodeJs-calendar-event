@@ -10,12 +10,10 @@ import { RoleRoutes } from './routes/role.routes';
 import { UserRoutes } from './routes/user.routes';
 import { RoleUserRoutes } from './routes/role-user.routes';
 import { ServiceRoutes } from './routes/service.routes';
-import { ServiceUserRoutes } from './routes/service-user.routes';
 import { initFirebase } from './config/firebaseConfig';
 import { createServer } from 'http';
 import { Server }  from 'socket.io'
 import { NotifRoutes } from './routes/notif.routes';
-import { EventServiceRoutes } from './routes/event-service.routes';
 
 // init server (express)
 const app = express()
@@ -23,7 +21,7 @@ const server = createServer(app)
 
 app
 .use(cors())
-// .use(express.json())
+.use(express.json())
 
 const socket = new Server(server, {
   cors: {
@@ -60,8 +58,7 @@ app.use('/roles', new RoleRoutes().getRouter())
 app.use('/role_users', new RoleUserRoutes().getRouter())
 app.use('/users', new UserRoutes().getRouter())
 app.use('/services', new ServiceRoutes().getRouter())
-app.use('/service_users', new ServiceUserRoutes().getRouter())
-app.use('/event_services', new EventServiceRoutes().getRouter())
+// app.use('/service_users', new ServiceUserRoutes().getRouter())
 app.use('/notifs', new NotifRoutes().getRouter())
 
 // 404 not found

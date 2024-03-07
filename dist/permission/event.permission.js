@@ -24,7 +24,7 @@ class EventPermission extends base_permission_1.BasePermission {
     }
     toViewIndex() {
         return __awaiter(this, void 0, void 0, function* () {
-            return true;
+            return this.classicPermission();
         });
     }
     toShow(id) {

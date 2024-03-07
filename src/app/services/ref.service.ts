@@ -12,7 +12,7 @@ export class RefService {
 
         return {
             ...data,
-            createdAt: new Date().toJSON(),
+            createdAt: new Date(),
             createdBy: await getUidToken(req),
             updatedAt: null,
             updatedBy: null
@@ -22,7 +22,7 @@ export class RefService {
     static async newUpdatedRef(req: Request, data: object) {
         return {
             ...data,
-            updatedAt: new Date().toJSON(),
+            updatedAt: new Date(),
             updatedBy: await getUidToken(req),
         }
     }

@@ -15,29 +15,25 @@ class BaseModel {
         this.collection = collection;
     }
     create(newData) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.collection.add(newData);
-        });
+        return this.collection.add(newData);
     }
-    getAll() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return (yield this.collection.get()).docs;
-        });
+    getAll(limit, lastFieldValue) {
+        let collection = this.collection
+            .orderBy('createdAt', 'desc')
+            .limit(limit);
+        if (lastFieldValue !== undefined)
+            collection = collection
+                .startAfter(lastFieldValue);
+        return collection.get();
     }
     getOne(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.collection.doc(id).get();
-        });
+        return this.collection.doc(id).get();
     }
     update(id, newData) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.collection.doc(id).update(newData);
-        });
+        return this.collection.doc(id).update(newData);
     }
     delete(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.collection.doc(id).delete();
-        });
+        return this.collection.doc(id).delete();
     }
     exists(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -45,16 +41,19 @@ class BaseModel {
         });
     }
     isCreatedBy(id, userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.collection.doc(id).get()
-                .then(data => data.get('createdBy') == userId);
-        });
+        return this.collection.doc(id).get()
+            .then(data => data.get('createdBy') == userId);
     }
     isUpdatedBy(id, userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.collection.doc(id).get()
-                .then(data => data.get('updatedBy') == userId);
+        return this.collection.doc(id).get()
+            .then(data => data.get('updatedBy') == userId);
+    }
+    formatView(docs) {
+        let data = [];
+        docs.map(doc => {
+            data.push(Object.assign({ id: doc.id }, doc.data()));
         });
+        return data;
     }
 }
 exports.BaseModel = BaseModel;

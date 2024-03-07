@@ -7,7 +7,7 @@ export class EventValidator implements IEvent {
 
     @IsDateString()
     @IsNotEmpty()
-    date: Date;
+    date: string;
 
     @IsString()
     @MaxLength(255)
@@ -18,18 +18,18 @@ export class EventValidator implements IEvent {
     @ExistIn(COLLECTION.categ, { message: 'The specified category is not found' })
     categId: string;
 
-    @IsString()
-    @IsArray()
-    @IsNotEmpty()
-    @ExistIn(COLLECTION.service, { message: 'One of id service is invalid'})
-    serviceRefs: string[]
+    // @IsString()
+    // @IsArray()
+    // @IsNotEmpty({ message: 'The service id is required.'})
+    // @ExistIn(COLLECTION.service, { message: 'One of id service is invalid'})
+    // serviceRefs: string[]
 
     init(model: IEvent) {
         this.date = model.date
         this.infos = model.infos || ''
-        this.categId = model.categId,
-        this.serviceRefs = model.serviceRefs
-        return { date: this.date, infos: this.infos, categId: this.categId }
+        this.categId = model.categId
+        // this.serviceRefs = model.serviceRefs
+        return { date: new Date(this.date), infos: this.infos, categId: this.categId }
     }
 
 }
@@ -37,7 +37,7 @@ export class EventValidator implements IEvent {
 export class EventUpdateValidator implements IEventUpdate {
     @IsDateString()
     @IsOptional()
-    date?: Date;
+    date?: string;
 
     @IsString()
     @MaxLength(255)
@@ -49,20 +49,20 @@ export class EventUpdateValidator implements IEventUpdate {
     @IsOptional()
     categId?: string;
 
-    @IsString()
-    @IsArray()
-    @IsNotEmpty()
-    @IsOptional()
-    @ExistIn(COLLECTION.service, { message: 'One of id service is invalid'})
-    serviceRefs?: string[]
+    // @IsString()
+    // @IsArray()
+    // @IsNotEmpty({ message: 'The service id is required.'})
+    // @IsOptional()
+    // @ExistIn(COLLECTION.service, { message: 'One of id service is invalid'})
+    // serviceRefs?: string[]
 
     init(model: { [key: string]: any }) {
         this.date = model.date
         this.infos = model.infos
         this.categId = model.categId
-        this.serviceRefs = model.serviceRefs
+        // this.serviceRefs = model.serviceRefs
 
-        const m = {date: this.date, infos: this.infos, categId: this.categId, serviceRe: this.serviceRefs } as { [key: string]: any }
+        const m = {date: this.date? new Date(this.date): undefined, infos: this.infos, categId: this.categId } as { [key: string]: any }
         return Object.keys(m)
             .reduce((result: { [key: string]: any }, key) => {
                 if (m[key] !== undefined) {

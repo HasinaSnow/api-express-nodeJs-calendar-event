@@ -14,7 +14,7 @@ export class EventServicePermission extends BasePermission {
     }
 
     async toViewIndex(): Promise<Boolean> {
-        return true
+        return this.classicPermission()
     }
 
     async toShow(id: string): Promise<Boolean> {

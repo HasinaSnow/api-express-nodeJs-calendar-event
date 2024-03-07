@@ -15,7 +15,6 @@ const role_routes_1 = require("./routes/role.routes");
 const user_routes_1 = require("./routes/user.routes");
 const role_user_routes_1 = require("./routes/role-user.routes");
 const service_routes_1 = require("./routes/service.routes");
-const service_user_routes_1 = require("./routes/service-user.routes");
 const firebaseConfig_1 = require("./config/firebaseConfig");
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
@@ -24,8 +23,8 @@ const notif_routes_1 = require("./routes/notif.routes");
 const app = (0, express_1.default)();
 const server = (0, http_1.createServer)(app);
 app
-    .use((0, cors_1.default)());
-// .use(express.json())
+    .use((0, cors_1.default)())
+    .use(express_1.default.json());
 const socket = new socket_io_1.Server(server, {
     cors: {
         origin: "*"
@@ -54,7 +53,7 @@ app.use('/roles', new role_routes_1.RoleRoutes().getRouter());
 app.use('/role_users', new role_user_routes_1.RoleUserRoutes().getRouter());
 app.use('/users', new user_routes_1.UserRoutes().getRouter());
 app.use('/services', new service_routes_1.ServiceRoutes().getRouter());
-app.use('/service_users', new service_user_routes_1.ServiceUserRoutes().getRouter());
+// app.use('/service_users', new ServiceUserRoutes().getRouter())
 app.use('/notifs', new notif_routes_1.NotifRoutes().getRouter());
 // 404 not found
 app.use(function (req, res, next) {

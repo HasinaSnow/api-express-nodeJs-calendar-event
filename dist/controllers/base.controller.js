@@ -41,7 +41,11 @@ class BaseController {
                     const dataWithRef = yield ref_service_1.RefService.addRefs(this.req, data);
                     // store data with ref in db
                     this.model.create(dataWithRef)
-                        .then(() => this.response.successfullStored())
+                        .then((data) => {
+                        // dispacth notif
+                        // return response
+                        return this.response.successfullStored();
+                    })
                         .catch((error) => this.response.errorServer(error));
                 }
             }));
@@ -52,12 +56,11 @@ class BaseController {
             // verify permission
             if (!(yield this.isPermis.toViewIndex()))
                 return this.response.notAuthorized();
-            this.model.getAll()
-                .then((values) => {
-                let data = [];
-                values.forEach(doc => {
-                    data.push(Object.assign({ id: doc.id }, doc.data()));
-                });
+            const limit = parseInt(this.req.params.limit) || 30;
+            const lastFieldValue = this.req.params.cursor || '';
+            this.model.getAll(limit, lastFieldValue)
+                .then((result) => {
+                const data = this.model.formatView(result.docs);
                 return this.response.successfullGetted(data);
             })
                 .catch(error => this.response.errorServer(error));

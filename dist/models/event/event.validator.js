@@ -11,11 +11,17 @@ const class_validator_1 = require("class-validator");
 const exists_validator_1 = require("../../utils/validators/exists.validator");
 const default_collection_name_1 = require("../../data/default-collection-name");
 class EventValidator {
+    // @IsString()
+    // @IsArray()
+    // @IsNotEmpty({ message: 'The service id is required.'})
+    // @ExistIn(COLLECTION.service, { message: 'One of id service is invalid'})
+    // serviceRefs: string[]
     init(model) {
         this.date = model.date;
         this.infos = model.infos || '';
         this.categId = model.categId;
-        return { date: this.date, infos: this.infos, categId: this.categId };
+        // this.serviceRefs = model.serviceRefs
+        return { date: new Date(this.date), infos: this.infos, categId: this.categId };
     }
 }
 exports.EventValidator = EventValidator;
@@ -33,11 +39,18 @@ __decorate([
     (0, exists_validator_1.ExistIn)(default_collection_name_1.COLLECTION.categ, { message: 'The specified category is not found' })
 ], EventValidator.prototype, "categId", void 0);
 class EventUpdateValidator {
+    // @IsString()
+    // @IsArray()
+    // @IsNotEmpty({ message: 'The service id is required.'})
+    // @IsOptional()
+    // @ExistIn(COLLECTION.service, { message: 'One of id service is invalid'})
+    // serviceRefs?: string[]
     init(model) {
         this.date = model.date;
         this.infos = model.infos;
         this.categId = model.categId;
-        const m = { date: this.date, infos: this.infos, categId: this.categId };
+        // this.serviceRefs = model.serviceRefs
+        const m = { date: this.date ? new Date(this.date) : undefined, infos: this.infos, categId: this.categId };
         return Object.keys(m)
             .reduce((result, key) => {
             if (m[key] !== undefined) {
