@@ -41,7 +41,11 @@ class BaseController {
                     const dataWithRef = yield ref_service_1.RefService.addRefs(this.req, data);
                     // store data with ref in db
                     this.model.create(dataWithRef)
-                        .then(() => this.response.successfullStored())
+                        .then((data) => {
+                        // dispacth notif
+                        // return response
+                        return this.response.successfullStored();
+                    })
                         .catch((error) => this.response.errorServer(error));
                 }
             }));

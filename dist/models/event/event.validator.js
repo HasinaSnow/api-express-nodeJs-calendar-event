@@ -14,7 +14,8 @@ class EventValidator {
     init(model) {
         this.date = model.date;
         this.infos = model.infos || '';
-        this.categId = model.categId;
+        this.categId = model.categId,
+            this.serviceRefs = model.serviceRefs;
         return { date: this.date, infos: this.infos, categId: this.categId };
     }
 }
@@ -32,12 +33,19 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, exists_validator_1.ExistIn)(default_collection_name_1.COLLECTION.categ, { message: 'The specified category is not found' })
 ], EventValidator.prototype, "categId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, exists_validator_1.ExistIn)(default_collection_name_1.COLLECTION.service, { message: 'One of id service is invalid' })
+], EventValidator.prototype, "serviceRefs", void 0);
 class EventUpdateValidator {
     init(model) {
         this.date = model.date;
         this.infos = model.infos;
         this.categId = model.categId;
-        const m = { date: this.date, infos: this.infos, categId: this.categId };
+        this.serviceRefs = model.serviceRefs;
+        const m = { date: this.date, infos: this.infos, categId: this.categId, serviceRe: this.serviceRefs };
         return Object.keys(m)
             .reduce((result, key) => {
             if (m[key] !== undefined) {
@@ -62,3 +70,10 @@ __decorate([
     (0, exists_validator_1.ExistIn)('categs', { message: 'The specified category is not found' }),
     (0, class_validator_1.IsOptional)()
 ], EventUpdateValidator.prototype, "categId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, exists_validator_1.ExistIn)(default_collection_name_1.COLLECTION.service, { message: 'One of id service is invalid' })
+], EventUpdateValidator.prototype, "serviceRefs", void 0);

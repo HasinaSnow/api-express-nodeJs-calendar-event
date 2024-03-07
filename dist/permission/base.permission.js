@@ -19,7 +19,7 @@ class BasePermission {
         this.userCurrent = new permission_service_1.PermissionService(req, model);
     }
     /**
-     * isAdmin || isPermis
+     * isAdmin || havePermissionRole
      */
     classicPermission() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -28,7 +28,7 @@ class BasePermission {
         });
     }
     /**
-     *  isAdmin || (isPermis && (isAuthor || isSuper))
+     *  isAdmin || (havePermissionRole && (isAuthor || isSuper))
      * @param id string: idModel
      * @returns Promise<Boolean>
      */
@@ -42,7 +42,7 @@ class BasePermission {
         });
     }
     /**
-     * (iqAdmin || isPermis) && (isSuper || isAuthor)
+     * (iqAdmin || havePermissionRole) && (isSuper || isAuthor)
      * @param id string: idModel
      * @returns Promise<Boolean>
      */
@@ -55,7 +55,7 @@ class BasePermission {
         });
     }
     /**
-     *  isPermis && isSuper
+     *  havePermissionRole && isSuper
      * @param id string idModel
      * @returns Promise<Boolean>
      */

@@ -20,6 +20,7 @@ const firebaseConfig_1 = require("./config/firebaseConfig");
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
 const notif_routes_1 = require("./routes/notif.routes");
+const event_service_routes_1 = require("./routes/event-service.routes");
 // init server (express)
 const app = (0, express_1.default)();
 const server = (0, http_1.createServer)(app);
@@ -55,6 +56,7 @@ app.use('/role_users', new role_user_routes_1.RoleUserRoutes().getRouter());
 app.use('/users', new user_routes_1.UserRoutes().getRouter());
 app.use('/services', new service_routes_1.ServiceRoutes().getRouter());
 app.use('/service_users', new service_user_routes_1.ServiceUserRoutes().getRouter());
+app.use('/event_services', new event_service_routes_1.EventServiceRoutes().getRouter());
 app.use('/notifs', new notif_routes_1.NotifRoutes().getRouter());
 // 404 not found
 app.use(function (req, res, next) {
