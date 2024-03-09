@@ -14,7 +14,6 @@ const class_validator_1 = require("class-validator");
 const response_1 = require("../utils/response");
 const account_model_1 = require("../models/account/account.model");
 const default_collection_name_1 = require("../data/default-collection-name");
-const user_model_1 = require("../models/user/user.model");
 const login_validator_1 = require("../models/account/login.validator");
 const register_validator_1 = require("../models/account/register.validator");
 class AccountController {
@@ -27,55 +26,55 @@ class AccountController {
     signup() {
         return __awaiter(this, void 0, void 0, function* () {
             // verify input validation and subsrciber account
-            if (yield this.registerValid()) {
-                // create the user and send confirmation key
-                this.model
-                    .register(this.dataSignUp)
-                    .then((userCredential) => {
-                    this.model.storeDisplayName(userCredential.user.uid, this.dataSignUp)
-                        .then(userRecord => {
-                        this.model.sendEmailConfirmation(userCredential.user)
-                            .then((value) => {
-                            const data = { name: userRecord.displayName, email: userRecord.email, userRef: userRecord.uid };
-                            new user_model_1.User().create(data)
-                                .then(_ => this.response.sendingConfirmationKey(value, "email"));
-                        });
-                    });
-                })
-                    .catch((error) => this.response.errorServer(error.message));
+            this.validate(new register_validator_1.RegisterValidator());
+            // register
+            try {
+                const creds = yield this.model.register(this.dataSignUp);
+                // save name user
+                yield this.model.storeDisplayName(creds.user.uid, this.dataSignUp.name);
+                // send email confirmation
+                yield this.model.sendEmailConfirmation(creds.user);
             }
+            catch (error) {
+                return this.response.errorServer(error);
+            }
+            return this.response.sendingConfirmationKey([], "email");
         });
     }
     signin() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (yield this.loginValid()) {
-                // get user
-                this.model.login(this.dataLogin)
-                    .then((creds) => __awaiter(this, void 0, void 0, function* () {
-                    // verify emailVerified
-                    if (!creds.user.emailVerified)
-                        return this.response.emailNotVerified();
-                    console.log('___displayName___', yield this.haveAccount(creds.user.uid));
-                    // verify account user
-                    if (!(yield this.haveAccount(creds.user.uid)))
-                        this.createAccount(creds.user.uid, creds.user.displayName)
-                            .catch(error => this.response.errorServer(error));
-                    // generate token
-                    this.model.generateToken(creds.user.uid);
-                    creds.user.getIdToken()
-                        .then(token => this.response.successlogin(token));
-                }))
-                    .catch((error) => {
-                    switch (error.code) {
-                        case "auth/invalid-credential":
-                            this.response.invalidRequest('The email or password is invalid.');
-                            break;
-                        default:
-                            this.response.errorServer(error);
-                            break;
+            // verify validation
+            this.validate(new login_validator_1.LoginValidator());
+            // login
+            this.model.login(this.dataLogin)
+                .then((creds) => __awaiter(this, void 0, void 0, function* () {
+                // verify email
+                if (!creds.user.emailVerified)
+                    return this.response.emailNotVerified();
+                // verifie if the user account exists
+                if (!(yield this.model.getUser(creds.user.uid)).exists) {
+                    // create user for this account
+                    try {
+                        this.model.createUser(creds);
                     }
-                });
-            }
+                    catch (error) {
+                        return this.response.errorServer(error);
+                    }
+                }
+                // send a success response signin with token JWT
+                return creds.user.getIdToken()
+                    .then(token => this.response.successlogin(token));
+            }))
+                .catch((error) => {
+                switch (error.code) {
+                    case "auth/invalid-credential":
+                        this.response.invalidRequest('The email or password is invalid.');
+                        break;
+                    default:
+                        this.response.errorServer(error);
+                        break;
+                }
+            });
         });
     }
     signout() {
@@ -89,43 +88,15 @@ class AccountController {
                 this.model.logout(value.uid)
                     .then(_ => this.response.successLogout());
             })
-                .catch(error => this.response.invalidRequest());
+                .catch(_ => this.response.invalidRequest());
         });
     }
-    loginValid() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const validator = new login_validator_1.LoginValidator();
-            this.dataLogin = validator.init(this.req.body);
-            return (0, class_validator_1.validate)(validator).then((errors) => {
-                if (errors.length > 0) {
-                    this.response.errorValidation(errors);
-                    return false;
-                }
-                return true;
-            });
+    validate(validationType) {
+        this.dataLogin = validationType.init(this.req.body);
+        (0, class_validator_1.validate)(validationType).then((errors) => {
+            if (errors.length > 0)
+                return this.response.errorValidation(errors);
         });
-    }
-    registerValid() {
-        return __awaiter(this, void 0, void 0, function* () {
-            // validate the inputs
-            const validator = new register_validator_1.RegisterValidator();
-            this.dataSignUp = validator.init(this.req.body);
-            return (0, class_validator_1.validate)(validator).then((errors) => {
-                if (errors.length > 0) {
-                    this.response.errorValidation(errors);
-                    return false;
-                }
-                return true;
-            });
-        });
-    }
-    haveAccount(userRef) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.model.haveAccount(userRef);
-        });
-    }
-    createAccount(userRef, name) {
-        return this.model.createAccount(userRef, name);
     }
 }
 exports.AccountController = AccountController;

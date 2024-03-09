@@ -17,17 +17,35 @@ class User extends base_model_1.BaseModel {
     constructor() {
         super(firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.user));
     }
-    userIdExists(userRef) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.collection.where('userRef', '==', userRef).get()
-                .then(user => !user.empty)
-                .catch(() => { throw Error('Error in Database users collection useref.'); });
-        });
+    /**
+     * store a new user document in the collection
+     * @param object newData
+     * @param string uid
+     * @returns Promise<FirebaseFirestore.WriteResult>
+     */
+    registerNewUser(newData, uid) {
+        return this.collection.doc(uid).set(newData);
     }
+    /**
+     * get all service Id by the specified userId
+     * @param string userId
+     * @returns Promise<string[]>
+     */
     getServiceRefs(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (yield firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.serviceUser).where('userId', '==', userId).get())
-                .docs.map(doc => doc.get('serviceId'));
+            return (yield firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.user).doc(userId).get())
+                .get('serviceRefs');
+        });
+    }
+    /**
+     * get all role Id by the specified userId
+     * @param string userId
+     * @returns Promise<string[]>
+     */
+    getRoleRefs(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (yield firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.roleUser).where('userId', '==', userId).get())
+                .docs.map(doc => doc.get('roleId'));
         });
     }
 }

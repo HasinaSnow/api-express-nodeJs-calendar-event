@@ -22,18 +22,18 @@ export class PermissionService {
     }
 
     async isAdmin() {
-        const roleId = await this.roleModel.getIdByName(ROLE_NAME.admin)
-        return !(await this.roleUserModel.getRoleRef(roleId)).empty
+        const roleAdminId = await this.roleModel.getIdByName(ROLE_NAME.admin)
+        return !(await this.roleUserModel.getRoleRefs(roleAdminId, this.userId)).empty
     }
 
     async isPermis(roleName: string) {
         const roleId = await this.roleModel.getIdByName(roleName)
-        return !(await this.roleUserModel.getRoleRef(roleId)).empty
+        return !(await this.roleUserModel.getRoleRefs(roleId, this.userId)).empty
     }
 
     async isSuper(roleName: string) {
         const roleId = await this.roleModel.getIdByName(roleName)
-        return !(await this.roleUserModel.getRoleRefSuper(roleId)).empty
+        return !(await this.roleUserModel.getRoleRefsSuper(roleId, this.userId)).empty
     }
 
     async isAuthor(id: string) {

@@ -17,16 +17,26 @@ class Service extends base_model_1.BaseModel {
     constructor() {
         super(firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.service));
     }
+    /**
+     * get all user Id by the specified serviceId
+     * @param string serviceId
+     * @returns Promise<string[]>
+     */
     getUserRefs(serviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (yield firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.serviceUser).where('serviceId', '==', serviceId).get())
-                .docs.map(doc => doc.get('userId'));
+            return (yield firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.user).where('serviceRefs', 'array-contains', serviceId).get())
+                .docs.map(doc => doc.id);
         });
     }
+    /**
+     * get all event Id by the specified serviceId
+     * @param string serviceId
+     * @returns Promise<string[]>
+     */
     getEventRefs(serviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (yield firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.eventService).where('serviceId', '==', serviceId).get())
-                .docs.map(doc => doc.get('eventId'));
+            return (yield firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.event).where('serviceRefs', 'array-contains', serviceId).get())
+                .docs.map(doc => doc.id);
         });
     }
 }

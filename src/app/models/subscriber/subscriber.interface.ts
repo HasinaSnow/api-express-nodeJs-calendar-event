@@ -1,11 +1,11 @@
 export interface ISubscriber {
     email: string,
     phone: string,
-    subscribeAt: Date|null
+    serviceRefs: string[]
 }
 
 export interface ISubscriberUpdate {
     email?: string,
     phone?: string,
-    subscribeAt?: Date
+    serviceRefs?: string[]
 }

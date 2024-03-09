@@ -37,24 +37,19 @@ export abstract class BaseController implements ControllerMethods {
             return this.response.notAuthorized()
 
         // verify validation
-        validate(this.createValidator)
-            .then(async errors => {
-                if (errors.length > 0) {
-                    return this.response.errorValidation(errors);
-                } else {
-                    // create data with createRef (updatedBy & updatedAt)
-                    const dataWithRef = await RefService.addRefs(this.req, data)
-                    // store data with ref in db
-                    this.model.create(dataWithRef)
-                        .then((data) => {
-                            // dispacth notif
+        const errors = await validate(this.createValidator)
+        if (errors.length > 0) return this.response.errorValidation(errors);
 
-                            // return response
-                            return this.response.successfullStored()
-                        })
-                        .catch((error) => this.response.errorServer(error))
-                }
-            });
+        // store data with ref in db
+        const dataWithRef = await RefService.addRefs(this.req, data)
+        this.model.create(dataWithRef)
+            .then((data) => {
+                // dispacth notif
+
+                // return response
+                return this.response.successfullStored()
+            })
+            .catch((error) => this.response.errorServer(error))
     }
 
     async index() {
@@ -74,7 +69,6 @@ export abstract class BaseController implements ControllerMethods {
     }
 
     async show() {
-
         const id = this.req.params.id
         this.model.getOne(id)
             .then(async value => {
@@ -95,29 +89,29 @@ export abstract class BaseController implements ControllerMethods {
         const id = this.req.params.id
         const data = this.updateValidator.init(this.req.body)
 
-        validate(this.updateValidator).then(async errors => {
-            if(errors.length > 0)
-                return this.response.errorValidation(errors)
+        // verify permission
+        if (!await this.isPermis.toUpdate(id))
+            return  this.response.notAuthorized()
 
-            // verify permission
-            if (!await this.isPermis.toUpdate(id))
-                return  this.response.notAuthorized()
+        // verify validation
+        const errors = await validate(this.createValidator)
+        if (errors.length > 0) return this.response.errorValidation(errors);
 
-            // create data with updatedRef (updatedBy & updatedAt)
-            const dataWithRef = await RefService.newUpdatedRef(this.req, data)
-            this.model.update(id, dataWithRef)
-                .then(value => this.response.successfullUpdated(value as any))
-                .catch(error => (error.code == 5)
-                    ? this.response.notFound() 
-                    : this.response.errorServer(error)
-                )
-        })
+        // create data with updatedRef (updatedBy & updatedAt)
+        const dataWithRef = await RefService.newUpdatedRef(this.req, data)
+        return this.model.update(id, dataWithRef)
+            .then(value => this.response.successfullUpdated(value as any))
+            .catch(error => (error.code == 5)
+                ? this.response.notFound() 
+                : this.response.errorServer(error)
+            )
 
     }
 
     async delete() {
         const id = this.req.params.id
 
+        // verify id
         if(!await this.exists(id))
             return this.response.notFound()
 
@@ -125,6 +119,7 @@ export abstract class BaseController implements ControllerMethods {
         if (!await this.isPermis.toDelete(id))
             return  this.response.notAuthorized()
 
+        // delete document
         this.model.delete(id)
             .then(async (value) => this.response.successfullDeleted(value as any))
             .catch(error => this.response.errorServer(error))

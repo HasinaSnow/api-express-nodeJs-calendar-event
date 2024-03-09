@@ -12,6 +12,9 @@ class RoleUserRoutes {
         this.router.post('/', (req, res) => {
             new role_user_controller_1.RoleUserController(req, res).store();
         });
+        this.router.post('/attribute', (req, res) => {
+            new role_user_controller_1.RoleUserController(req, res).attribute();
+        });
         this.router.get('/', (req, res) => {
             new role_user_controller_1.RoleUserController(req, res).index();
         });

@@ -36,8 +36,8 @@ class Event extends base_model_1.BaseModel {
         return collection.get();
     }
     /**
-     *
-     * @param eventId {string}
+     * get all service id by the specified event id
+     * @param string eventId
      * @returns Promise<string[]>
      */
     getServiceRefs(eventId) {
@@ -46,6 +46,12 @@ class Event extends base_model_1.BaseModel {
                 .docs.map(doc => doc.get('serviceId'));
         });
     }
+    /**
+     * filter all the documents by the specified fileter params
+     * @param docs
+     * @param filter
+     * @returns
+     */
     getfilterEvent(docs, filter) {
         if (filter.date)
             docs = docs.filter(doc => new Date(doc.get('date')).getDate() == filter.date);

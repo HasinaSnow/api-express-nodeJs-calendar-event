@@ -58,7 +58,6 @@ app.use('/roles', new RoleRoutes().getRouter())
 app.use('/role_users', new RoleUserRoutes().getRouter())
 app.use('/users', new UserRoutes().getRouter())
 app.use('/services', new ServiceRoutes().getRouter())
-// app.use('/service_users', new ServiceUserRoutes().getRouter())
 app.use('/notifs', new NotifRoutes().getRouter())
 
 // 404 not found

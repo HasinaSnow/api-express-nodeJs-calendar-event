@@ -25,8 +25,7 @@ const authMiddleware = (req, res, next) => {
             case 'auth/expired-id-token':
                 return response.errorServer(error);
             default:
-                console.log('___not auth___');
-                return response.notAuthenticated();
+                return response.notAuthenticated(error.code);
         }
     });
 };

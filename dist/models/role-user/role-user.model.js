@@ -12,23 +12,47 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoleUser = void 0;
 const firebaseConfig_1 = require("../../config/firebaseConfig");
 const default_collection_name_1 = require("../../data/default-collection-name");
+const default_role_name_data_1 = require("../../data/default-role-name.data");
 const base_model_1 = require("../base.model");
+const role_model_1 = require("../role/role.model");
 class RoleUser extends base_model_1.BaseModel {
-    constructor() {
+    constructor(roleModel = new role_model_1.Role()) {
         super(firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.roleUser));
+        this.roleModel = roleModel;
     }
-    getRoleRef(roleId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.collection
-                .where('roleId', '==', roleId).get();
-        });
-    }
-    getRoleRefSuper(roleId) {
+    getRoleRefs(roleId, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.collection
                 .where('roleId', '==', roleId)
+                .where('userId', '==', userId)
+                .get();
+        });
+    }
+    getRoleRefsSuper(roleId, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.collection
+                .where('roleId', '==', roleId)
+                .where('userId', '==', userId)
                 .where('isSuper', '==', true)
                 .get();
+        });
+    }
+    isAdminId(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const adminId = yield this.roleModel.getIdByName(default_role_name_data_1.ROLE_NAME.admin);
+            return id == adminId;
+        });
+    }
+    isRoleUserManagerId(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const roleUserManagerId = yield this.roleModel.getIdByName(default_role_name_data_1.ROLE_NAME.roleUserManager);
+            return id == roleUserManagerId;
+        });
+    }
+    isRoleManagerId(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const roleManagerId = yield this.roleModel.getIdByName(default_role_name_data_1.ROLE_NAME.roleManager);
+            return id == roleManagerId;
         });
     }
 }

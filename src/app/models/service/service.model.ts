@@ -8,13 +8,24 @@ export class Service extends BaseModel {
         super(db.collection(COLLECTION.service))
     }
 
-    async getUserRefs(serviceId: string) {
-        return (await db.collection(COLLECTION.serviceUser).where('serviceId', '==', serviceId).get())
-            .docs.map(doc => doc.get('userId') as string)
+    /**
+     * get all user Id by the specified serviceId
+     * @param string serviceId
+     * @returns Promise<string[]>
+     */
+    async getUserRefs(serviceId: string): Promise<string[]> {
+        return (await db.collection(COLLECTION.user).where('serviceRefs', 'array-contains', serviceId).get())
+            .docs.map(doc => doc.id as string)
     }
 
+    /**
+     * get all event Id by the specified serviceId
+     * @param string serviceId 
+     * @returns Promise<string[]>
+     */
     async getEventRefs(serviceId: string) {
-        return (await db.collection(COLLECTION.eventService).where('serviceId', '==', serviceId).get())
-            .docs.map(doc => doc.get('eventId') as string)
+        return (await db.collection(COLLECTION.event).where('serviceRefs', 'array-contains', serviceId).get())
+            .docs.map(doc => doc.id as string)
     }
+
 }

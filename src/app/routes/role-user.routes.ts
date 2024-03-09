@@ -14,6 +14,10 @@ export class RoleUserRoutes {
             new RoleUserController(req, res).store()
         });
 
+        this.router.post('/attribute', (req, res) => {
+            new RoleUserController(req, res).attribute()
+        });
+
         this.router.get('/', (req, res) => {
             new RoleUserController(req, res).index()
         });

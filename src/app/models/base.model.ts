@@ -58,6 +58,7 @@ export abstract class BaseModel implements ModelMethods {
         docs.map(doc => {
             data.push({id: doc.id, ...doc.data()})
         })
+        console.log('___data___', data)
         return data
     }
 

@@ -53,7 +53,6 @@ app.use('/roles', new role_routes_1.RoleRoutes().getRouter());
 app.use('/role_users', new role_user_routes_1.RoleUserRoutes().getRouter());
 app.use('/users', new user_routes_1.UserRoutes().getRouter());
 app.use('/services', new service_routes_1.ServiceRoutes().getRouter());
-// app.use('/service_users', new ServiceUserRoutes().getRouter())
 app.use('/notifs', new notif_routes_1.NotifRoutes().getRouter());
 // 404 not found
 app.use(function (req, res, next) {

@@ -19,7 +19,7 @@ class UserRoutes {
             new user_controller_1.UserController(req, res).show();
         });
         this.router.put('/:id', (req, res) => {
-            // new UserController(req, res).update()
+            new user_controller_1.UserController(req, res).update();
         });
         this.router.delete('/:id', (req, res) => {
             // new UserControllers(req, res).delete()

@@ -10,13 +10,18 @@ exports.SubscriberUpdateValidator = exports.SubscriberValidator = void 0;
 const class_validator_1 = require("class-validator");
 const unique_validator_1 = require("../../utils/validators/unique.validator");
 const default_collection_name_1 = require("../../data/default-collection-name");
+const exists_validator_1 = require("../../utils/validators/exists.validator");
 class SubscriberValidator {
     init(model) {
         var _a, _b;
         this.email = ((_a = (model.email)) === null || _a === void 0 ? void 0 : _a.trim()) || '';
         this.phone = ((_b = (model.phone)) === null || _b === void 0 ? void 0 : _b.trim()) || null;
-        this.subscribeAt = model.subscribeAt || null;
-        return { email: this.email, phone: this.phone, subscribeAt: this.subscribeAt };
+        this.serviceRefs = model.serviceRefs || [];
+        return {
+            email: this.email,
+            phone: this.phone,
+            serviceRfs: this.serviceRefs
+        };
     }
 }
 exports.SubscriberValidator = SubscriberValidator;
@@ -31,15 +36,19 @@ __decorate([
     (0, class_validator_1.IsOptional)()
 ], SubscriberValidator.prototype, "phone", void 0);
 __decorate([
-    (0, class_validator_1.IsDateString)(),
-    (0, class_validator_1.IsOptional)()
-], SubscriberValidator.prototype, "subscribeAt", void 0);
+    (0, exists_validator_1.ExistIn)(default_collection_name_1.COLLECTION.service, { message: 'The serviceRefs field must be a non-empty array, and each value match to a service document.' }),
+    (0, class_validator_1.IsArray)({ message: 'The serviceRefs field is required and must be an array.' })
+], SubscriberValidator.prototype, "serviceRefs", void 0);
 class SubscriberUpdateValidator {
     init(model) {
         this.email = model.email;
         this.phone = model.phone;
-        this.subscribeAt = model.subscribeAt;
-        const m = { email: this.email, phone: this.phone, subscribeAt: this.subscribeAt };
+        this.serviceRefs = model.serviceRefs;
+        const m = {
+            email: this.email,
+            phone: this.phone,
+            serviceRefs: this.serviceRefs
+        };
         return Object.keys(m)
             .reduce((result, key) => {
             if (m[key] !== undefined) {
@@ -61,6 +70,7 @@ __decorate([
     (0, class_validator_1.IsOptional)()
 ], SubscriberUpdateValidator.prototype, "phone", void 0);
 __decorate([
-    (0, class_validator_1.IsDateString)(),
+    (0, exists_validator_1.ExistIn)(default_collection_name_1.COLLECTION.service, { message: 'The serviceRefs field must be a non-empty array, and each value match to a service document.' }),
+    (0, class_validator_1.IsArray)({ message: 'The serviceRefs field is required and must be an array.' }),
     (0, class_validator_1.IsOptional)()
-], SubscriberUpdateValidator.prototype, "subscribeAt", void 0);
+], SubscriberUpdateValidator.prototype, "serviceRefs", void 0);

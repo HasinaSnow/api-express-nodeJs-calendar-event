@@ -29,20 +29,20 @@ class PermissionService {
     }
     isAdmin() {
         return __awaiter(this, void 0, void 0, function* () {
-            const roleId = yield this.roleModel.getIdByName(default_role_name_data_1.ROLE_NAME.admin);
-            return !(yield this.roleUserModel.getRoleRef(roleId)).empty;
+            const roleAdminId = yield this.roleModel.getIdByName(default_role_name_data_1.ROLE_NAME.admin);
+            return !(yield this.roleUserModel.getRoleRefs(roleAdminId, this.userId)).empty;
         });
     }
     isPermis(roleName) {
         return __awaiter(this, void 0, void 0, function* () {
             const roleId = yield this.roleModel.getIdByName(roleName);
-            return !(yield this.roleUserModel.getRoleRef(roleId)).empty;
+            return !(yield this.roleUserModel.getRoleRefs(roleId, this.userId)).empty;
         });
     }
     isSuper(roleName) {
         return __awaiter(this, void 0, void 0, function* () {
             const roleId = yield this.roleModel.getIdByName(roleName);
-            return !(yield this.roleUserModel.getRoleRefSuper(roleId)).empty;
+            return !(yield this.roleUserModel.getRoleRefsSuper(roleId, this.userId)).empty;
         });
     }
     isAuthor(id) {

@@ -27,7 +27,7 @@ export class ResponseService {
     sendingConfirmationKey(data: any = [], subject: string = 'email') {
         return this.res.status(200).json({
             status: true,
-            message: 'We have sending your confirmation key to your ' + subject,
+            message: 'We have sending the confirmation\'s link of your account to your ' + subject,
             data: data
         })
     }

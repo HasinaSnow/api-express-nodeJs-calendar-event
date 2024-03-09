@@ -31,24 +31,18 @@ class BaseController {
             if (!(yield this.isPermis.toStore()))
                 return this.response.notAuthorized();
             // verify validation
-            (0, class_validator_1.validate)(this.createValidator)
-                .then((errors) => __awaiter(this, void 0, void 0, function* () {
-                if (errors.length > 0) {
-                    return this.response.errorValidation(errors);
-                }
-                else {
-                    // create data with createRef (updatedBy & updatedAt)
-                    const dataWithRef = yield ref_service_1.RefService.addRefs(this.req, data);
-                    // store data with ref in db
-                    this.model.create(dataWithRef)
-                        .then((data) => {
-                        // dispacth notif
-                        // return response
-                        return this.response.successfullStored();
-                    })
-                        .catch((error) => this.response.errorServer(error));
-                }
-            }));
+            const errors = yield (0, class_validator_1.validate)(this.createValidator);
+            if (errors.length > 0)
+                return this.response.errorValidation(errors);
+            // store data with ref in db
+            const dataWithRef = yield ref_service_1.RefService.addRefs(this.req, data);
+            this.model.create(dataWithRef)
+                .then((data) => {
+                // dispacth notif
+                // return response
+                return this.response.successfullStored();
+            })
+                .catch((error) => this.response.errorServer(error));
         });
     }
     index() {
@@ -88,30 +82,32 @@ class BaseController {
         return __awaiter(this, void 0, void 0, function* () {
             const id = this.req.params.id;
             const data = this.updateValidator.init(this.req.body);
-            (0, class_validator_1.validate)(this.updateValidator).then((errors) => __awaiter(this, void 0, void 0, function* () {
-                if (errors.length > 0)
-                    return this.response.errorValidation(errors);
-                // verify permission
-                if (!(yield this.isPermis.toUpdate(id)))
-                    return this.response.notAuthorized();
-                // create data with updatedRef (updatedBy & updatedAt)
-                const dataWithRef = yield ref_service_1.RefService.newUpdatedRef(this.req, data);
-                this.model.update(id, dataWithRef)
-                    .then(value => this.response.successfullUpdated(value))
-                    .catch(error => (error.code == 5)
-                    ? this.response.notFound()
-                    : this.response.errorServer(error));
-            }));
+            // verify permission
+            if (!(yield this.isPermis.toUpdate(id)))
+                return this.response.notAuthorized();
+            // verify validation
+            const errors = yield (0, class_validator_1.validate)(this.createValidator);
+            if (errors.length > 0)
+                return this.response.errorValidation(errors);
+            // create data with updatedRef (updatedBy & updatedAt)
+            const dataWithRef = yield ref_service_1.RefService.newUpdatedRef(this.req, data);
+            return this.model.update(id, dataWithRef)
+                .then(value => this.response.successfullUpdated(value))
+                .catch(error => (error.code == 5)
+                ? this.response.notFound()
+                : this.response.errorServer(error));
         });
     }
     delete() {
         return __awaiter(this, void 0, void 0, function* () {
             const id = this.req.params.id;
+            // verify id
             if (!(yield this.exists(id)))
                 return this.response.notFound();
             // verify permission
             if (!(yield this.isPermis.toDelete(id)))
                 return this.response.notAuthorized();
+            // delete document
             this.model.delete(id)
                 .then((value) => __awaiter(this, void 0, void 0, function* () { return this.response.successfullDeleted(value); }))
                 .catch(error => this.response.errorServer(error));
