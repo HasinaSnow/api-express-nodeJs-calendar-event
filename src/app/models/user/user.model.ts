@@ -8,15 +8,34 @@ export class User extends BaseModel {
         super(db.collection(COLLECTION.user))
     }
 
-    async userIdExists(userRef: string) {
-        return await this.collection.where('userRef', '==', userRef).get()
-            .then(user => !user.empty)
-            .catch(() => { throw Error('Error in Database users collection useref.') })
+    /**
+     * store a new user document in the collection
+     * @param object newData 
+     * @param string uid 
+     * @returns Promise<FirebaseFirestore.WriteResult>
+     */
+    registerNewUser(newData: any, uid: string) {
+        return this.collection.doc(uid).set(newData)
     }
 
+    /**
+     * get all service Id by the specified userId
+     * @param string userId
+     * @returns Promise<string[]>
+     */
     async getServiceRefs(userId: string) {
-        return (await db.collection(COLLECTION.serviceUser).where('userId', '==', userId).get())
-            .docs.map(doc => doc.get('serviceId') as string)
+        return (await db.collection(COLLECTION.user).doc(userId).get())
+            .get('serviceRefs') as string[]
+    }
+
+    /**
+     * get all role Id by the specified userId
+     * @param string userId 
+     * @returns Promise<string[]>
+     */
+    async getRoleRefs(userId: string) {
+        return (await db.collection(COLLECTION.roleUser).where('userId', '==', userId).get())
+            .docs.map(doc => doc.get('roleId'))
     }
 
 }

@@ -53,6 +53,7 @@ class BaseModel {
         docs.map(doc => {
             data.push(Object.assign({ id: doc.id }, doc.data()));
         });
+        console.log('___data___', data);
         return data;
     }
 }

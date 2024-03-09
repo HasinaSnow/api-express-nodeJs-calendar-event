@@ -4,19 +4,82 @@ import { RoleUserPermission } from "../permission/role-user.permission";
 import { SUBJECT } from "../data/default-collection-name";
 import { RoleUser } from "../models/role-user/role-user.model";
 import { RoleUserValidator, RoleUserUpdateValidator } from "../models/role-user/role-user.validator";
+import { validate } from "class-validator";
+import { RefService } from "../services/ref.service";
+import { exit } from "process";
 
 export class RoleUserController extends BaseController {
 
-    constructor(req: Request, res: Response) {
+    constructor(req: Request, res: Response, private roleUser = new RoleUser(), private permission: RoleUserPermission = new RoleUserPermission(req)) {
         super(
             req,
             res,
             SUBJECT.roleUser,
-            new RoleUser(), 
+            roleUser, 
             new RoleUserValidator(),
             new RoleUserUpdateValidator(),
-            new RoleUserPermission(req)
+            permission
         )
+    }
+
+    async attribute() {
+        let data = this.createValidator.init(this.req.body)
+
+        // verify permission
+        if(!await this.permission.toAttribute())
+            return this.response.notAuthorized()
+
+        // verify validation
+        const errors = await validate(this.createValidator)
+        if (errors.length > 0) return this.response.errorValidation(errors);
+
+        // verify the attributed role
+        if(await this.isNotAttributedRef())
+            return this.response.notAuthorized()
+
+        // store data with ref in db
+        const dataWithRef = await RefService.addRefs(this.req, data)
+        this.model.create(dataWithRef)
+            .then((data) => {
+                // dispacth notif
+
+                // return response
+                return this.response.successfullStored(data)
+            })
+            .catch((error) => this.response.errorServer(error))
+    }
+
+    async updateAttribute() {
+        const id = this.req.params.id
+        const data = this.updateValidator.init(this.req.body)
+
+        // verify permission
+        if (!await this.permission.toUpdateAttribute(id))
+            return  this.response.notAuthorized()
+
+        // verify validation
+        const errors = await validate(this.createValidator)
+        if (errors.length > 0) return this.response.errorValidation(errors);
+
+        // verify the attributed role
+        if(await this.isNotAttributedRef())
+            return this.response.notAuthorized()
+
+        // create data with updatedRef (updatedBy & updatedAt)
+        const dataWithRef = await RefService.newUpdatedRef(this.req, data)
+        return this.model.update(id, dataWithRef)
+            .then(value => this.response.successfullUpdated(value as any))
+            .catch(error => (error.code == 5)
+                ? this.response.notFound() 
+                : this.response.errorServer(error)
+            )
+    }
+
+    private async isNotAttributedRef() {
+        const isAdminRef = this.roleUser.isAdminId(this.req.body.roleId)
+        const isRoleUserManagerRef = this.roleUser.isRoleUserManagerId(this.req.body.roleId)
+        const isRoleManagerRef = this.roleUser.isRoleManagerId(this.req.body.roleId)
+        return (await isAdminRef || await isRoleUserManagerRef || await isRoleManagerRef)
     }
 
 }

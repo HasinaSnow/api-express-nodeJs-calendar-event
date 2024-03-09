@@ -10,6 +10,13 @@ export class RoleUserPermission extends BasePermission {
     }
 
     async toStore(): Promise<Boolean> {
+        if (await this.userCurrent.isAdmin())
+            if(await this.userCurrent.isSuper(ROLE_NAME.admin))
+                return true
+        return false
+    }
+
+    async toAttribute(): Promise<Boolean> {
         return this.classicPermission()
     }
 
@@ -22,6 +29,13 @@ export class RoleUserPermission extends BasePermission {
     }
 
     async toUpdate(id: string): Promise<Boolean> {
+        if (await this.userCurrent.isAdmin())
+            if(await this.userCurrent.isSuper(ROLE_NAME.admin))
+                return true
+        return false
+    }
+
+    async toUpdateAttribute(id: string): Promise<Boolean> {
         return this.privatePermission(id)
     }
 

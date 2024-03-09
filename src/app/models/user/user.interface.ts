@@ -3,7 +3,6 @@ export interface IUser {
     userRef: string,
     infos: string,
     serviceRefs: string[]
-
 }
 
 export interface IUserUpdate {

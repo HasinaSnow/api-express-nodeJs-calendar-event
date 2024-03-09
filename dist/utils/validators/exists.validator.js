@@ -31,20 +31,25 @@ function ExistIn(property, validationOptions) {
                             data = (yield firebaseConfig_1.db.collection(property).where('email', '==', value).get());
                             result = !data.empty;
                         }
-                        else {
-                            if ((0, class_validator_1.isArray)(value)) {
-                                const values = value;
-                                values.forEach((v) => __awaiter(this, void 0, void 0, function* () {
-                                    data = (yield firebaseConfig_1.db.collection(property).where('email', '==', value).get());
-                                    if (data.empty)
-                                        return false;
-                                }));
-                                result = true;
+                        else if ((0, class_validator_1.isArray)(value)) {
+                            if (value.length == 0)
+                                return false;
+                            const set = new Set();
+                            for (const v of value)
+                                set.add(v); // eliminer les doublons
+                            console.log('___set___', set);
+                            const values = Array.from(set); // tableau de valeur sans doublons
+                            for (let i = 0; i < values.length; i++) {
+                                const data = (yield firebaseConfig_1.db.collection(property).doc(values[i]).get());
+                                if (!data.exists)
+                                    return false;
                             }
+                            result = true;
+                        }
+                        else {
                             data = (yield firebaseConfig_1.db.collection(property).doc(value).get());
                             result = data.exists;
                         }
-                        // console.log(`___Data ${property}_${value}___ `, result)
                         return result;
                     });
                 },

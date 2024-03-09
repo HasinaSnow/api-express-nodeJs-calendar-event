@@ -23,7 +23,7 @@ export class UserRoutes {
         });
 
         this.router.put('/:id', (req, res) => {
-            // new UserController(req, res).update()
+            new UserController(req, res).update()
         });
 
         this.router.delete('/:id', (req, res) => {

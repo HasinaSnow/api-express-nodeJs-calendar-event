@@ -1,7 +1,8 @@
 import { IsEmail, IsNotEmpty, IsString, Length } from "class-validator";
 import { ILogin } from "./account.interface";
+import { IValidator } from "../validator.interface";
 
-export class LoginValidator {
+export class LoginValidator implements IValidator {
 
     @IsNotEmpty({ message: 'This field must be required' })
     @IsEmail({}, { message: 'This field must be an valid email.' })

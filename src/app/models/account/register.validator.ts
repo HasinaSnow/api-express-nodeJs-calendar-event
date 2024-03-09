@@ -1,8 +1,9 @@
 import { IsNotEmpty, IsString, Length } from "class-validator";
 import { IRegister } from "./account.interface";
 import { ExistIn } from "../../utils/validators/exists.validator";
+import { IValidator } from "../validator.interface";
 
-export class RegisterValidator {
+export class RegisterValidator implements IValidator {
 
     @IsString()
     @IsNotEmpty({message: 'Your Name number is required'})

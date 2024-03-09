@@ -20,19 +20,22 @@ export class UserValidator implements IUser {
     @MaxLength(255)
     infos: string;
 
-    @IsString()
-    @IsArray()
-    @IsNotEmpty({ message: 'The service id is required.'})
-    @IsOptional()
-    @ExistIn(COLLECTION.service, { message: 'One of id service is invalid'})
+    @ExistIn(COLLECTION.service, { message: 'The serviceRefs field must be a non-empty array, and each value match to a service document.'})
+    @IsArray({ message: 'The serviceRefs field is required and must be an array.'})
     serviceRefs: string[]
 
     init(model: IUser) {
         this.name = model.name || ''
         this.userRef = model.userRef || ''
         this.infos = model.infos || ''
+        this.serviceRefs = model.serviceRefs || []
 
-        return { name: this.name, infos: this.infos, userRef: this.userRef, serviceRefs: this.serviceRefs }
+        return {
+            name: this.name,
+            infos: this.infos,
+            userRef: this.userRef,
+            serviceRefs: this.serviceRefs
+        }
     }
 }
 
@@ -50,18 +53,24 @@ export class UserUpdateValidator implements IUserUpdate {
     @IsOptional()
     infos: string | undefined;
 
-    @IsString()
-    @IsArray()
-    @IsNotEmpty({ message: 'The service id is required.'})
+    @IsArray({ message: 'The serviceRefs must be an array of string.'})
+    @ExistIn(COLLECTION.service, { message: 'The serviceRefs field must be a non-empty array, and each value match to a service document.'})
     @IsOptional()
-    @ExistIn(COLLECTION.service, { message: 'One of id service is invalid'})
     serviceRefs?: string[]
 
     init(model: IUserUpdate) {
         this.name = model.name
         this.infos = model.infos
+        this.serviceRefs = model.serviceRefs
 
-        const m = {name: this.name, infos: this.infos, serviceRefs: this.serviceRefs } as { [key: string]: any }
+        const m = {
+            name: this.name,
+            infos: this.infos,
+            serviceRefs: this.serviceRefs
+        } as { [key: string]: any }
+
+        console.log('___m___', m)
+
         return Object.keys(m)
             .reduce((result: { [key: string]: any }, key) => {
                 if (m[key] !== undefined) {

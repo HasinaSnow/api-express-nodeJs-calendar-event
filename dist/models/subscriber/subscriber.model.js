@@ -8,5 +8,8 @@ class Subscriber extends base_model_1.BaseModel {
     constructor() {
         super(firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.subscriber));
     }
+    getByEmail(email) {
+        return this.collection.where('email', '==', email).get();
+    }
 }
 exports.Subscriber = Subscriber;

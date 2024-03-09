@@ -7,4 +7,8 @@ export class Subscriber extends BaseModel {
     constructor() {
         super(db.collection(COLLECTION.subscriber))
     }
+
+    getByEmail(email: string) {
+        return this.collection.where('email', '==', email).get()
+    }
 }

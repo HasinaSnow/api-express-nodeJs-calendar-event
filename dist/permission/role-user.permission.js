@@ -19,6 +19,14 @@ class RoleUserPermission extends base_permission_1.BasePermission {
     }
     toStore() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (yield this.userCurrent.isAdmin())
+                if (yield this.userCurrent.isSuper(default_role_name_data_1.ROLE_NAME.admin))
+                    return true;
+            return false;
+        });
+    }
+    toAttribute() {
+        return __awaiter(this, void 0, void 0, function* () {
             return this.classicPermission();
         });
     }
@@ -33,6 +41,14 @@ class RoleUserPermission extends base_permission_1.BasePermission {
         });
     }
     toUpdate(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (yield this.userCurrent.isAdmin())
+                if (yield this.userCurrent.isSuper(default_role_name_data_1.ROLE_NAME.admin))
+                    return true;
+            return false;
+        });
+    }
+    toUpdateAttribute(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.privatePermission(id);
         });

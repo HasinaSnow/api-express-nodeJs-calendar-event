@@ -26,8 +26,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
                     return response.errorServer(error)
 
                 default:
-                    console.log('___not auth___')
-                    return response.notAuthenticated()
+                    return response.notAuthenticated(error.code)
             }
         });
 };

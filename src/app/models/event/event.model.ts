@@ -36,8 +36,8 @@ export class Event extends BaseModel {
     }
 
     /**
-     * 
-     * @param eventId {string}
+     * get all service id by the specified event id
+     * @param string eventId
      * @returns Promise<string[]>
      */
     async getServiceRefs(eventId: string) {
@@ -45,6 +45,12 @@ export class Event extends BaseModel {
             .docs.map(doc => doc.get('serviceId') as string)
     }
 
+    /**
+     * filter all the documents by the specified fileter params
+     * @param docs 
+     * @param filter 
+     * @returns 
+     */
     getfilterEvent(docs: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>[], filter: IFilterEvent) {
         if(filter.date)
             docs = docs.filter(doc => new Date(doc.get('date')).getDate() == filter.date)
