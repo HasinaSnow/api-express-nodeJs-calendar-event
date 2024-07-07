@@ -8,7 +8,7 @@ export abstract class BasePermission {
 
     constructor(
         protected req: Request,
-        protected role: string,
+        public role: string,
         protected model: BaseModel,
     ) {
         this.userCurrent = new PermissionService(req, model)

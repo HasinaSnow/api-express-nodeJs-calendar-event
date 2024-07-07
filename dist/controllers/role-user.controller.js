@@ -17,6 +17,8 @@ const role_user_model_1 = require("../models/role-user/role-user.model");
 const role_user_validator_1 = require("../models/role-user/role-user.validator");
 const class_validator_1 = require("class-validator");
 const ref_service_1 = require("../services/ref.service");
+const role_model_1 = require("../models/role/role.model");
+const default_role_name_data_1 = require("../data/default-role-name.data");
 class RoleUserController extends base_controller_1.BaseController {
     constructor(req, res, roleUser = new role_user_model_1.RoleUser(), permission = new role_user_permission_1.RoleUserPermission(req)) {
         super(req, res, default_collection_name_1.SUBJECT.roleUser, roleUser, new role_user_validator_1.RoleUserValidator(), new role_user_validator_1.RoleUserUpdateValidator(), permission);
@@ -72,10 +74,11 @@ class RoleUserController extends base_controller_1.BaseController {
     }
     isNotAttributedRef() {
         return __awaiter(this, void 0, void 0, function* () {
-            const isAdminRef = this.roleUser.isAdminId(this.req.body.roleId);
-            const isRoleUserManagerRef = this.roleUser.isRoleUserManagerId(this.req.body.roleId);
-            const isRoleManagerRef = this.roleUser.isRoleManagerId(this.req.body.roleId);
-            return ((yield isAdminRef) || (yield isRoleUserManagerRef) || (yield isRoleManagerRef));
+            const role = new role_model_1.Role();
+            const isAdminRef = (yield role.getIdByName(default_role_name_data_1.ROLE_NAME.admin)) == this.req.body.roleId;
+            const isRoleUserManagerRef = (yield role.getIdByName(default_role_name_data_1.ROLE_NAME.roleUserManager)) == this.req.body.roleId;
+            const isRoleManagerRef = (yield role.getIdByName(default_role_name_data_1.ROLE_NAME.roleManager)) == this.req.body.roleId;
+            return (isAdminRef || isRoleUserManagerRef || isRoleManagerRef);
         });
     }
 }

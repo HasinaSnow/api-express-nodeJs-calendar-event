@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoleUser = void 0;
 const firebaseConfig_1 = require("../../config/firebaseConfig");
 const default_collection_name_1 = require("../../data/default-collection-name");
-const default_role_name_data_1 = require("../../data/default-role-name.data");
 const base_model_1 = require("../base.model");
 const role_model_1 = require("../role/role.model");
 class RoleUser extends base_model_1.BaseModel {
@@ -20,7 +19,13 @@ class RoleUser extends base_model_1.BaseModel {
         super(firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.roleUser));
         this.roleModel = roleModel;
     }
-    getRoleRefs(roleId, userId) {
+    /**
+     * get roleUser
+     * @param string roleId
+     * @param string userId
+     * @return Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>>
+     */
+    getRoleUser(roleId, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.collection
                 .where('roleId', '==', roleId)
@@ -28,7 +33,13 @@ class RoleUser extends base_model_1.BaseModel {
                 .get();
         });
     }
-    getRoleRefsSuper(roleId, userId) {
+    /**
+     * get roleUser where super is true
+     * @param string roleId
+     * @param string userId
+     * @return Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>>
+     */
+    getRoleUserSuper(roleId, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.collection
                 .where('roleId', '==', roleId)
@@ -37,22 +48,28 @@ class RoleUser extends base_model_1.BaseModel {
                 .get();
         });
     }
-    isAdminId(id) {
+    /**
+     * get all role id by users
+     * @param string[] userRefs
+     * @returns Promise<string[]>
+     */
+    getRoleRefsByUsers(userRefs) {
         return __awaiter(this, void 0, void 0, function* () {
-            const adminId = yield this.roleModel.getIdByName(default_role_name_data_1.ROLE_NAME.admin);
-            return id == adminId;
+            return (yield this.collection
+                .where('userId', 'in', userRefs)
+                .get()).docs.map(doc => doc.id);
         });
     }
-    isRoleUserManagerId(id) {
+    /**
+     * get all user id by roles
+     * @param string[] roleRefs
+     * @returns Promise<string[]>
+     */
+    getUserRefsByRoles(roleRefs) {
         return __awaiter(this, void 0, void 0, function* () {
-            const roleUserManagerId = yield this.roleModel.getIdByName(default_role_name_data_1.ROLE_NAME.roleUserManager);
-            return id == roleUserManagerId;
-        });
-    }
-    isRoleManagerId(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const roleManagerId = yield this.roleModel.getIdByName(default_role_name_data_1.ROLE_NAME.roleManager);
-            return id == roleManagerId;
+            return (yield this.collection
+                .where('roleId', 'in', roleRefs)
+                .get()).docs.map(doc => doc.get('userId'));
         });
     }
 }

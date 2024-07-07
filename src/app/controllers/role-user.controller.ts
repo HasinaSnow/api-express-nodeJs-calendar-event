@@ -7,6 +7,8 @@ import { RoleUserValidator, RoleUserUpdateValidator } from "../models/role-user/
 import { validate } from "class-validator";
 import { RefService } from "../services/ref.service";
 import { exit } from "process";
+import { Role } from "../models/role/role.model";
+import { ROLE_NAME } from "../data/default-role-name.data";
 
 export class RoleUserController extends BaseController {
 
@@ -76,10 +78,11 @@ export class RoleUserController extends BaseController {
     }
 
     private async isNotAttributedRef() {
-        const isAdminRef = this.roleUser.isAdminId(this.req.body.roleId)
-        const isRoleUserManagerRef = this.roleUser.isRoleUserManagerId(this.req.body.roleId)
-        const isRoleManagerRef = this.roleUser.isRoleManagerId(this.req.body.roleId)
-        return (await isAdminRef || await isRoleUserManagerRef || await isRoleManagerRef)
+        const role = new Role()
+        const isAdminRef = (await role.getIdByName(ROLE_NAME.admin)) == this.req.body.roleId
+        const isRoleUserManagerRef =  (await role.getIdByName(ROLE_NAME.roleUserManager)) == this.req.body.roleId
+        const isRoleManagerRef =  (await role.getIdByName(ROLE_NAME.roleManager)) == this.req.body.roleId
+        return (isAdminRef || isRoleUserManagerRef || isRoleManagerRef)
     }
 
 }

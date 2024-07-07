@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegisterValidator = void 0;
 const class_validator_1 = require("class-validator");
 const exists_validator_1 = require("../../utils/validators/exists.validator");
+const unique_validator_1 = require("../../utils/validators/unique.validator");
 class RegisterValidator {
     init(model) {
         this.name = model.name || '';
@@ -25,7 +26,8 @@ __decorate([
 ], RegisterValidator.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)({ message: 'The email field must be required.' }),
-    (0, exists_validator_1.ExistIn)('subscribers', { message: 'You are not authorized to signin. Please, contact the service.' })
+    (0, exists_validator_1.ExistIn)('subscribers', { message: 'You are not authorized to register. Please, contact the service.' }),
+    (0, unique_validator_1.IsUnique)('users', { message: 'This email is already taked.' })
 ], RegisterValidator.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),

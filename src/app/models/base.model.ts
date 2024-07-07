@@ -1,6 +1,6 @@
 export interface ModelMethods {
     create(newData: any): Promise<FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>>,
-    getAll(limit: number, lastFieldValue: string): Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>>,
+    getAll(limit: number, lastFieldValue: Date): Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>>,
     getOne(id: string): Promise<FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>>,
     update(id: string, newData: any): Promise<FirebaseFirestore.WriteResult>,
     delete(id: string): Promise<FirebaseFirestore.WriteResult>
@@ -17,7 +17,7 @@ export abstract class BaseModel implements ModelMethods {
         return this.collection.add(newData)
     }
 
-    getAll(limit: number, lastFieldValue: string|undefined ): Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>> {
+    getAll(limit: number, lastFieldValue: Date|undefined): Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>> {
         let collection = this.collection
             .orderBy('createdAt', 'desc')
             .limit(limit)
@@ -58,7 +58,6 @@ export abstract class BaseModel implements ModelMethods {
         docs.map(doc => {
             data.push({id: doc.id, ...doc.data()})
         })
-        console.log('___data___', data)
         return data
     }
 

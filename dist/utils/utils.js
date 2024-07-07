@@ -9,18 +9,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUidToken = void 0;
+exports.getUidToken = exports.getUidTokenInRequest = void 0;
 const firebaseConfig_1 = require("../config/firebaseConfig");
 /**
- * decode the token in request and get the uid
+ * get the unique id of user into the token in request
  * @param req Request
  * @returns Promise<string>
  */
-const getUidToken = (req) => __awaiter(void 0, void 0, void 0, function* () {
+const getUidTokenInRequest = (req) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const authToken = (_a = req.header('Authorization')) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
     return firebaseConfig_1.auth.verifyIdToken(authToken)
         .then(user => user.uid)
-        .catch(_ => '');
+        .catch(error => { throw new Error(error.message); });
+});
+exports.getUidTokenInRequest = getUidTokenInRequest;
+/**
+ * get the unique id of user into the token
+ */
+const getUidToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    const isBearerToken = token.split(' ').length >= 2;
+    if (isBearerToken) {
+        console.log('__is bearer__');
+        token = token.split(' ')[1];
+    }
+    return firebaseConfig_1.auth.verifyIdToken(token)
+        .then(user => user.uid)
+        .catch(error => { throw new Error(error.message); });
 });
 exports.getUidToken = getUidToken;

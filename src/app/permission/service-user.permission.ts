@@ -1,12 +1,12 @@
 import { Request } from "express";
 import { BasePermission } from "./base.permission";
 import { ROLE_NAME } from "../data/default-role-name.data";
-import { ServiceUser } from "../models/service-user/service-user.model";
+import { User } from "../models/user/user.model";
 
 export class ServiceUserPermission extends BasePermission {
 
     constructor(req: Request) {
-        super(req, ROLE_NAME.serviceUserManager, new ServiceUser())
+        super(req, ROLE_NAME.userManager, new User())
     }
 
     async toStore(): Promise<Boolean> {

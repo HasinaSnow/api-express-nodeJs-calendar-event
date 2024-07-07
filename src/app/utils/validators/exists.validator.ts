@@ -37,8 +37,6 @@ export function ExistIn(
             for (const v of value)
               set.add(v) // eliminer les doublons
 
-              console.log('___set___', set)
-
             const values = Array.from(set) // tableau de valeur sans doublons
             for (let i = 0; i < values.length; i++) {
               const data = (await db.collection(property).doc(values[i]).get())
@@ -48,6 +46,8 @@ export function ExistIn(
 
           } else {
 
+            console.log('___property___', propertyName)
+            console.log('___values__', value)
             data = (await db.collection(property).doc(value).get())
             result = data.exists
 

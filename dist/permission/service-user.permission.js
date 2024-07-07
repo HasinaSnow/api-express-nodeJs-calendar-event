@@ -12,10 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ServiceUserPermission = void 0;
 const base_permission_1 = require("./base.permission");
 const default_role_name_data_1 = require("../data/default-role-name.data");
-const service_user_model_1 = require("../models/service-user/service-user.model");
+const user_model_1 = require("../models/user/user.model");
 class ServiceUserPermission extends base_permission_1.BasePermission {
     constructor(req) {
-        super(req, default_role_name_data_1.ROLE_NAME.serviceUserManager, new service_user_model_1.ServiceUser());
+        super(req, default_role_name_data_1.ROLE_NAME.userManager, new user_model_1.User());
     }
     toStore() {
         return __awaiter(this, void 0, void 0, function* () {

@@ -36,7 +36,7 @@ class EventController extends base_controller_1.BaseController {
             if (yield this.isPermis.toViewIndex())
                 serviceRefs = [];
             else {
-                const userId = yield (0, utils_1.getUidToken)(this.req);
+                const userId = yield (0, utils_1.getUidTokenInRequest)(this.req);
                 serviceRefs = yield new user_model_1.User().getServiceRefs(userId);
                 if (serviceRefs.length == 0)
                     serviceRefs = ['serviceRefsIsEmpty'];

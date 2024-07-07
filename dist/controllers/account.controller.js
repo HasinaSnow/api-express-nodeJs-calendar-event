@@ -25,28 +25,28 @@ class AccountController {
     }
     signup() {
         return __awaiter(this, void 0, void 0, function* () {
-            // verify input validation and subsrciber account
-            this.validate(new register_validator_1.RegisterValidator());
+            yield this.validate(new register_validator_1.RegisterValidator());
+            const registerData = this.requestValidated;
             // register
-            try {
-                const creds = yield this.model.register(this.dataSignUp);
+            this.model.register(registerData)
+                .then((creds) => __awaiter(this, void 0, void 0, function* () {
                 // save name user
-                yield this.model.storeDisplayName(creds.user.uid, this.dataSignUp.name);
+                yield this.model.storeDisplayName(creds.user.uid, registerData.name);
                 // send email confirmation
                 yield this.model.sendEmailConfirmation(creds.user);
-            }
-            catch (error) {
-                return this.response.errorServer(error);
-            }
-            return this.response.sendingConfirmationKey([], "email");
+                // return suceess response
+                return this.response.sendingConfirmationKey([], "email");
+            }))
+                .catch((error) => this.response.errorServer(error));
         });
     }
     signin() {
         return __awaiter(this, void 0, void 0, function* () {
             // verify validation
-            this.validate(new login_validator_1.LoginValidator());
+            yield this.validate(new login_validator_1.LoginValidator());
+            const loginData = this.requestValidated;
             // login
-            this.model.login(this.dataLogin)
+            this.model.login(loginData)
                 .then((creds) => __awaiter(this, void 0, void 0, function* () {
                 // verify email
                 if (!creds.user.emailVerified)
@@ -55,7 +55,7 @@ class AccountController {
                 if (!(yield this.model.getUser(creds.user.uid)).exists) {
                     // create user for this account
                     try {
-                        this.model.createUser(creds);
+                        yield this.model.createUser(creds);
                     }
                     catch (error) {
                         return this.response.errorServer(error);
@@ -92,8 +92,9 @@ class AccountController {
         });
     }
     validate(validationType) {
-        this.dataLogin = validationType.init(this.req.body);
-        (0, class_validator_1.validate)(validationType).then((errors) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.requestValidated = validationType.init(this.req.body);
+            const errors = yield (0, class_validator_1.validate)(validationType);
             if (errors.length > 0)
                 return this.response.errorValidation(errors);
         });

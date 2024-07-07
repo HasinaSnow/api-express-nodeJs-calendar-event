@@ -37,7 +37,6 @@ function ExistIn(property, validationOptions) {
                             const set = new Set();
                             for (const v of value)
                                 set.add(v); // eliminer les doublons
-                            console.log('___set___', set);
                             const values = Array.from(set); // tableau de valeur sans doublons
                             for (let i = 0; i < values.length; i++) {
                                 const data = (yield firebaseConfig_1.db.collection(property).doc(values[i]).get());
@@ -47,6 +46,8 @@ function ExistIn(property, validationOptions) {
                             result = true;
                         }
                         else {
+                            console.log('___property___', propertyName);
+                            console.log('___values__', value);
                             data = (yield firebaseConfig_1.db.collection(property).doc(value).get());
                             result = data.exists;
                         }

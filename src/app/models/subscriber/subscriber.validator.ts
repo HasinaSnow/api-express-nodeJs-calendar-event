@@ -8,12 +8,10 @@ export class SubscriberValidator implements ISubscriber {
 
     @IsEmail()
     @IsUnique(COLLECTION.subscriber, {message: 'The email is already exists'})
-    @IsOptional()
     email: string;
 
     @IsPhoneNumber('MG')
     @IsUnique(COLLECTION.subscriber, {message: 'The phoneNumber is already exists'})
-    @IsOptional()
     phone: string;
 
     @ExistIn(COLLECTION.service, { message: 'The serviceRefs field must be a non-empty array, and each value match to a service document.'})
