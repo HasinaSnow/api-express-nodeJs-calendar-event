@@ -24,8 +24,19 @@ export class User extends BaseModel {
      * @returns Promise<string[]>
      */
     async getServiceRefs(userId: string) {
-        return (await db.collection(COLLECTION.user).doc(userId).get())
-            .get('serviceRefs') as string[]
+        return (await this.collection.doc(userId).get())
+            .get('serviceRefs')
+    }
+
+    /**
+     * get all user id by specified services
+     * @param string[] serviceRefs
+     * @returns Promise<string[]>
+     */
+    async getUserRefsByServices(serviceRefs: string[]) {
+        return (await this.collection
+            .where('serviceRefs', 'array-contains-any', serviceRefs)
+            .get()).docs.map(doc => doc.id)
     }
 
     /**

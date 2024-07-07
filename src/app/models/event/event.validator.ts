@@ -48,7 +48,7 @@ export class EventUpdateValidator implements IEventUpdate {
     infos?: string;
 
     @IsString()
-    @ExistIn('categs', { message: 'The specified category is not found' })
+    @ExistIn(COLLECTION.categ, { message: 'The specified category is not found' })
     @IsOptional()
     categId?: string;
 
@@ -71,11 +71,12 @@ export class EventUpdateValidator implements IEventUpdate {
         } as { [key: string]: any }
 
         return Object.keys(m)
-            .reduce((result: { [key: string]: any }, key) => {
-                if (m[key] !== undefined) {
-                    result[key] = m[key];
-                }
-                return result;
+        .reduce((result: { [key: string]: any }, key) => {
+            if (m[key] !== undefined) {
+                result[key] = m[key];
+            }
+            console.log('__serviceRefs___', result)
+            return result;
             }, {});
     }
 }

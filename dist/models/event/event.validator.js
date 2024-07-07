@@ -59,6 +59,7 @@ class EventUpdateValidator {
             if (m[key] !== undefined) {
                 result[key] = m[key];
             }
+            console.log('__serviceRefs___', result);
             return result;
         }, {});
     }
@@ -75,7 +76,7 @@ __decorate([
 ], EventUpdateValidator.prototype, "infos", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
-    (0, exists_validator_1.ExistIn)('categs', { message: 'The specified category is not found' }),
+    (0, exists_validator_1.ExistIn)(default_collection_name_1.COLLECTION.categ, { message: 'The specified category is not found' }),
     (0, class_validator_1.IsOptional)()
 ], EventUpdateValidator.prototype, "categId", void 0);
 __decorate([

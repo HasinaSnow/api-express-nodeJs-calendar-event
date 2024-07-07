@@ -5,7 +5,7 @@ export const ROLE_NAME = {
     serviceManager: 'SERVICE MANAGER',
     roleUserManager: 'ROLE_USER MANAGER',
     roleManager: 'ROLE MANAGER',
-    subscriberManager: 'SUBSCRIBER MANAGER4',
+    subscriberManager: 'SUBSCRIBER MANAGER',
     userManager: 'USER MANAGER',
     eventServiceManager: 'EVENT_SERVICE MANAGER'
 }

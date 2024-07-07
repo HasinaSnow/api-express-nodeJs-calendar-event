@@ -27,13 +27,11 @@ class SubscriberValidator {
 exports.SubscriberValidator = SubscriberValidator;
 __decorate([
     (0, class_validator_1.IsEmail)(),
-    (0, unique_validator_1.IsUnique)(default_collection_name_1.COLLECTION.subscriber, { message: 'The email is already exists' }),
-    (0, class_validator_1.IsOptional)()
+    (0, unique_validator_1.IsUnique)(default_collection_name_1.COLLECTION.subscriber, { message: 'The email is already exists' })
 ], SubscriberValidator.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsPhoneNumber)('MG'),
-    (0, unique_validator_1.IsUnique)(default_collection_name_1.COLLECTION.subscriber, { message: 'The phoneNumber is already exists' }),
-    (0, class_validator_1.IsOptional)()
+    (0, unique_validator_1.IsUnique)(default_collection_name_1.COLLECTION.subscriber, { message: 'The phoneNumber is already exists' })
 ], SubscriberValidator.prototype, "phone", void 0);
 __decorate([
     (0, exists_validator_1.ExistIn)(default_collection_name_1.COLLECTION.service, { message: 'The serviceRefs field must be a non-empty array, and each value match to a service document.' }),

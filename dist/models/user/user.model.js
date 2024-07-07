@@ -33,8 +33,20 @@ class User extends base_model_1.BaseModel {
      */
     getServiceRefs(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (yield firebaseConfig_1.db.collection(default_collection_name_1.COLLECTION.user).doc(userId).get())
+            return (yield this.collection.doc(userId).get())
                 .get('serviceRefs');
+        });
+    }
+    /**
+     * get all user id by specified services
+     * @param string[] serviceRefs
+     * @returns Promise<string[]>
+     */
+    getUserRefsByServices(serviceRefs) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (yield this.collection
+                .where('serviceRefs', 'array-contains-any', serviceRefs)
+                .get()).docs.map(doc => doc.id);
         });
     }
     /**

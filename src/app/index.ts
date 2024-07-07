@@ -14,6 +14,11 @@ import { initFirebase } from './config/firebaseConfig';
 import { createServer } from 'http';
 import { Server }  from 'socket.io'
 import { NotifRoutes } from './routes/notif.routes';
+import { NotifService } from './services/notif.service';
+import { getUidToken } from './utils/utils';
+import { notifChannel } from './channel.socket';
+import { User } from './models/user/user.model';
+import { SocketService } from './services/socket.service';
 
 // init server (express)
 const app = express()
@@ -23,28 +28,35 @@ app
 .use(cors())
 .use(express.json())
 
-const socket = new Server(server, {
-  cors: {
-    origin: "*"
-  }
-})
+// init firebase
+initFirebase()
+
+export const socket = new Server(server, { cors: { origin: "*"} })
 
 // channel listen
-socket.on('connection', (socket) => {
-  console.log('Nouvelle connexion:', socket.id);
-  socket.emit('isConnected', 'Api rest calendar event')
+socket.on('connection', (socketInstance) => {
+  console.log('____logged____:', socketInstance.id);
 
-  // Gérer les événements de socket ici
+  // received token
+  socketInstance.on('token', async (token: string) => {
+    console.log('____token received_____')
+    try {
+      const userId = await getUidToken(token)
+      socketInstance.data = { userId: userId }
 
-  socket.on('disconnect', () => {
-    socket.emit('isDisconnected', 'Api rest calendar event')
-    console.log('Déconnexion:', socket.id);
+      // send notifs where read: false if exists
+      notifChannel(socketInstance, userId)
+    } catch (error) {
+      socketInstance.emit('invalid_token', 'Invalid token or expired')
+      socketInstance.disconnect()
+    }
+  })
+
+  socket.on('disconnect', (socket) => {
+    console.log('____loggout___:', socket);
   });
 });
 
-
-// init firebase
-initFirebase()
 
 // listen routes
 app.use('/account', new AccountRoutes().getRouter())

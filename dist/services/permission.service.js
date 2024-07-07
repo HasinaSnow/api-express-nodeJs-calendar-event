@@ -18,36 +18,31 @@ class PermissionService {
     constructor(req, model) {
         this.req = req;
         this.model = model;
+        this.userId = (0, utils_1.getUidTokenInRequest)(this.req);
         this.roleModel = new role_model_1.Role();
         this.roleUserModel = new role_user_model_1.RoleUser();
-        this.setCurrentUserId(req);
-    }
-    setCurrentUserId(req) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.userId = yield (0, utils_1.getUidToken)(req);
-        });
     }
     isAdmin() {
         return __awaiter(this, void 0, void 0, function* () {
             const roleAdminId = yield this.roleModel.getIdByName(default_role_name_data_1.ROLE_NAME.admin);
-            return !(yield this.roleUserModel.getRoleRefs(roleAdminId, this.userId)).empty;
+            return !(yield this.roleUserModel.getRoleUser(roleAdminId, yield this.userId)).empty;
         });
     }
     isPermis(roleName) {
         return __awaiter(this, void 0, void 0, function* () {
             const roleId = yield this.roleModel.getIdByName(roleName);
-            return !(yield this.roleUserModel.getRoleRefs(roleId, this.userId)).empty;
+            return !(yield this.roleUserModel.getRoleUser(roleId, yield this.userId)).empty;
         });
     }
     isSuper(roleName) {
         return __awaiter(this, void 0, void 0, function* () {
             const roleId = yield this.roleModel.getIdByName(roleName);
-            return !(yield this.roleUserModel.getRoleRefsSuper(roleId, this.userId)).empty;
+            return !(yield this.roleUserModel.getRoleUserSuper(roleId, yield this.userId)).empty;
         });
     }
     isAuthor(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.model.isCreatedBy(id, this.userId);
+            return yield this.model.isCreatedBy(id, yield this.userId);
         });
     }
 }

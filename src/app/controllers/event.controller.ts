@@ -5,7 +5,7 @@ import { BaseController } from "./base.controller";
 import { EventPermission } from "../permission/event.permission";
 import { SUBJECT } from "../data/default-collection-name";
 import { User } from "../models/user/user.model";
-import { getUidToken } from "../utils/utils";
+import { getUidTokenInRequest } from "../utils/utils";
 
 export class EventController extends BaseController {
 
@@ -35,7 +35,7 @@ export class EventController extends BaseController {
         if(await this.isPermis.toViewIndex())
             serviceRefs = []
         else {
-            const userId = await getUidToken(this.req)
+            const userId = await getUidTokenInRequest(this.req)
             serviceRefs = await new User().getServiceRefs(userId)
             if(serviceRefs.length == 0)
                 serviceRefs = ['serviceRefsIsEmpty']

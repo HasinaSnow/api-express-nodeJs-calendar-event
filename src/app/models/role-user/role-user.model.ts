@@ -10,14 +10,26 @@ export class RoleUser extends BaseModel {
         super(db.collection(COLLECTION.roleUser))
     }
 
-    async getRoleRefs(roleId: string, userId: string) {
+    /**
+     * get roleUser
+     * @param string roleId
+     * @param string userId
+     * @return Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>>
+     */
+    async getRoleUser(roleId: string, userId: string) {
         return this.collection
             .where('roleId', '==', roleId)
             .where('userId', '==', userId)
             .get()
     }
 
-    async getRoleRefsSuper(roleId: string, userId: string) {
+    /**
+     * get roleUser where super is true
+     * @param string roleId
+     * @param string userId
+     * @return Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>>
+     */
+    async getRoleUserSuper(roleId: string, userId: string) {
         return this.collection
             .where('roleId', '==', roleId)
             .where('userId', '==', userId)
@@ -25,19 +37,26 @@ export class RoleUser extends BaseModel {
             .get()
     }
 
-    async isAdminId(id: string) {
-        const adminId = await this.roleModel.getIdByName(ROLE_NAME.admin)
-        return id == adminId
+    /**
+     * get all role id by users
+     * @param string[] userRefs
+     * @returns Promise<string[]>
+     */
+    async getRoleRefsByUsers(userRefs: string[]) {
+        return (await this.collection
+            .where('userId', 'in', userRefs)
+            .get()).docs.map(doc => doc.id)
     }
 
-    async isRoleUserManagerId(id: string) {
-        const roleUserManagerId = await this.roleModel.getIdByName(ROLE_NAME.roleUserManager)
-        return id == roleUserManagerId
-    }
-
-    async isRoleManagerId(id: string) {
-        const roleManagerId = await this.roleModel.getIdByName(ROLE_NAME.roleManager)
-        return id == roleManagerId
+    /**
+     * get all user id by roles
+     * @param string[] roleRefs
+     * @returns Promise<string[]>
+     */
+    async getUserRefsByRoles(roleRefs: string[]) {
+        return (await this.collection
+            .where('roleId', 'in', roleRefs)
+            .get()).docs.map(doc => doc.get('userId') as string)
     }
 
 }

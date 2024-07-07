@@ -11,6 +11,7 @@ exports.COLLECTION = {
     service: 'services',
     eventService: 'eventService',
     notif: 'notifs',
+    notifTargets: 'targets'
 };
 exports.SUBJECT = {
     account: 'Account',

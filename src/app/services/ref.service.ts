@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { getUidToken } from "../utils/utils";
+import { getUidTokenInRequest } from "../utils/utils";
 
 export class RefService {
 
@@ -13,7 +13,7 @@ export class RefService {
         return {
             ...data,
             createdAt: new Date(),
-            createdBy: await getUidToken(req),
+            createdBy: await getUidTokenInRequest(req),
             updatedAt: null,
             updatedBy: null
         }
@@ -23,7 +23,7 @@ export class RefService {
         return {
             ...data,
             updatedAt: new Date(),
-            updatedBy: await getUidToken(req),
+            updatedBy: await getUidTokenInRequest(req),
         }
     }
 }

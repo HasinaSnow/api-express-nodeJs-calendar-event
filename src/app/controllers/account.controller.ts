@@ -9,8 +9,7 @@ import { RegisterValidator } from "../models/account/register.validator";
 import { IValidator } from "../models/validator.interface";
 
 export class AccountController {
-  private dataSignUp: IRegister;
-  private dataLogin: ILogin;
+  private requestValidated: IRegister|ILogin;
 
   constructor(
     private req: Request,
@@ -20,28 +19,28 @@ export class AccountController {
   ) {}
 
   async signup() {
-    // verify input validation and subsrciber account
-    this.validate(new RegisterValidator())
+    await this.validate(new RegisterValidator())
+    const registerData: IRegister = this.requestValidated as IRegister
 
     // register
-    try {
-      const creds = await this.model.register(this.dataSignUp)
-      // save name user
-      await this.model.storeDisplayName(creds.user.uid, this.dataSignUp.name)
-      // send email confirmation
-      await this.model.sendEmailConfirmation(creds.user)
-    } catch (error) {
-      return this.response.errorServer(error)
-    }
-    return this.response.sendingConfirmationKey([], "email")
+    this.model.register(registerData)
+      .then(async creds => {
+        // save name user
+        await this.model.storeDisplayName(creds.user.uid, registerData.name)
+        // send email confirmation
+        await this.model.sendEmailConfirmation(creds.user)
+        // return suceess response
+        return this.response.sendingConfirmationKey([], "email")
+      })
+      .catch ((error) => this.response.errorServer(error))
   }
 
   async signin() {
     // verify validation
-    this.validate(new LoginValidator())
-
+    await this.validate(new LoginValidator())
+    const loginData: ILogin = this.requestValidated as ILogin
     // login
-    this.model.login(this.dataLogin)
+    this.model.login(loginData)
       .then(async (creds) => {
           // verify email
           if (!creds.user.emailVerified)
@@ -51,7 +50,7 @@ export class AccountController {
           if(!(await this.model.getUser(creds.user.uid)).exists) {
             // create user for this account
             try {
-              this.model.createUser(creds)
+              await this.model.createUser(creds)
             } catch (error) {
               return this.response.errorServer(error)
             }
@@ -86,11 +85,10 @@ export class AccountController {
         .catch(_ => this.response.invalidRequest())
   }
 
-  validate(validationType: IValidator) {
-    this.dataLogin = validationType.init(this.req.body ) as ILogin
-    validate(validationType).then((errors) => {
+  async validate(validationType: IValidator) {
+    this.requestValidated = validationType.init(this.req.body ) as IRegister|ILogin
+    const errors = await validate(validationType)
       if (errors.length > 0) return this.response.errorValidation(errors);
-    });
   }
 
 }

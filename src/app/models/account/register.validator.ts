@@ -2,6 +2,7 @@ import { IsNotEmpty, IsString, Length } from "class-validator";
 import { IRegister } from "./account.interface";
 import { ExistIn } from "../../utils/validators/exists.validator";
 import { IValidator } from "../validator.interface";
+import { IsUnique } from "../../utils/validators/unique.validator";
 
 export class RegisterValidator implements IValidator {
 
@@ -11,7 +12,8 @@ export class RegisterValidator implements IValidator {
     name: string
 
     @IsNotEmpty({ message: 'The email field must be required.' })
-    @ExistIn('subscribers', {message: 'You are not authorized to signin. Please, contact the service.'})
+    @ExistIn('subscribers', {message: 'You are not authorized to register. Please, contact the service.'})
+    @IsUnique('users', {message: 'This email is already taked.'})
     email: string
 
     @IsString()

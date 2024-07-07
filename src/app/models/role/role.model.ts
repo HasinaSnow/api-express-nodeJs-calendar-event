@@ -1,5 +1,6 @@
 import { db } from "../../config/firebaseConfig";
 import { COLLECTION } from "../../data/default-collection-name";
+import { ROLE_NAME } from "../../data/default-role-name.data";
 import { BaseModel } from "../base.model";
 
 export class Role extends BaseModel {

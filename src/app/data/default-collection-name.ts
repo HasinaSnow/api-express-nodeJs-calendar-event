@@ -8,6 +8,7 @@ export const COLLECTION = {
     service: 'services',
     eventService: 'eventService',
     notif: 'notifs',
+    notifTargets: 'targets'
 }
 
 export const SUBJECT = {
